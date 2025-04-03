@@ -1,0 +1,41 @@
+{
+  "$schema": "https://tree-sitter.github.io/tree-sitter/assets/schemas/config.schema.json",
+  "grammars": [
+    {
+      "name": "norsu",
+      "camelcase": "Norsu",
+      "title": "Norsu",
+      "scope": "source.norsu",
+      "file-types": [
+        "no",
+        "norsu"
+      ],
+      "injection-regex": "^norsu$",
+      "class-name": "TreeSitterNorsu"
+    }
+  ],
+  "metadata": {
+    "version": "0.0.0+1",
+    "license": "GPL-3.0",
+    "description": "A modern markup language designed for personal knowledge management",
+    "authors": [
+      {
+        "name": "Sergey Lavrent",
+        "email": "sergeylavrent@protonmail.com",
+        "url": "https://github.com/hiimsergey"
+      }
+    ],
+    "links": {
+      "repository": "https://github.com/hiimsergey/tree-sitter-norsu"
+    }
+  },
+  "bindings": {
+    "c": true,
+    "go": true,
+    "node": true,
+    "python": true,
+    "rust": true,
+    "swift": true,
+    "zig": false
+  }
+}

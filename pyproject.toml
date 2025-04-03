@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tree-sitter-norsu"
+description = "A modern markup language designed for personal knowledge management"
+version = "0.0.0+1"
+keywords = ["incremental", "parsing", "tree-sitter", "norsu"]
+classifiers = [
+  "Intended Audience :: Developers",
+  "Topic :: Software Development :: Compilers",
+  "Topic :: Text Processing :: Linguistic",
+  "Typing :: Typed",
+]
+authors = [{ name = "Sergey Lavrent", email = "sergeylavrent@protonmail.com" }]
+requires-python = ">=3.10"
+license.text = "GPL-3.0"
+readme = "README.md"
+
+[project.urls]
+Homepage = "https://github.com/hiimsergey/tree-sitter-norsu"
+
+[project.optional-dependencies]
+core = ["tree-sitter~=0.24"]
+
+[tool.cibuildwheel]
+build = "cp310-*"
+build-frontend = "build"
