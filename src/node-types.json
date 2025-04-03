@@ -1,12 +1,169 @@
 [
   {
-    "type": "source_file",
+    "type": "document",
     "named": true,
     "root": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "code_block",
+          "named": true
+        },
+        {
+          "type": "heading_1",
+          "named": true
+        },
+        {
+          "type": "heading_2",
+          "named": true
+        },
+        {
+          "type": "heading_3",
+          "named": true
+        },
+        {
+          "type": "heading_4",
+          "named": true
+        },
+        {
+          "type": "heading_5",
+          "named": true
+        },
+        {
+          "type": "heading_6",
+          "named": true
+        },
+        {
+          "type": "list",
+          "named": true
+        },
+        {
+          "type": "metadata",
+          "named": true
+        },
+        {
+          "type": "paragraph",
+          "named": true
+        },
+        {
+          "type": "quote",
+          "named": true
+        },
+        {
+          "type": "separator",
+          "named": true
+        },
+        {
+          "type": "table",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "heading_1",
+    "named": true,
     "fields": {}
   },
   {
-    "type": "hello",
+    "type": "metadata",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "metadata_line",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "paragraph",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "block_continuation",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "#",
     "named": false
+  },
+  {
+    "type": "*/",
+    "named": false
+  },
+  {
+    "type": "/**",
+    "named": false
+  },
+  {
+    "type": "TODO one",
+    "named": false
+  },
+  {
+    "type": "TODO paragraph",
+    "named": false
+  },
+  {
+    "type": "block_continuation",
+    "named": true
+  },
+  {
+    "type": "code_block",
+    "named": true
+  },
+  {
+    "type": "heading_2",
+    "named": true
+  },
+  {
+    "type": "heading_3",
+    "named": true
+  },
+  {
+    "type": "heading_4",
+    "named": true
+  },
+  {
+    "type": "heading_5",
+    "named": true
+  },
+  {
+    "type": "heading_6",
+    "named": true
+  },
+  {
+    "type": "list",
+    "named": true
+  },
+  {
+    "type": "metadata_line",
+    "named": true
+  },
+  {
+    "type": "quote",
+    "named": true
+  },
+  {
+    "type": "separator",
+    "named": true
+  },
+  {
+    "type": "table",
+    "named": true
   }
 ]

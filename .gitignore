@@ -34,7 +34,7 @@ zig-cache/
 zig-out/
 
 # Example dirs
-/examples/*/
+example*
 
 # Grammar volatiles
 *.wasm
