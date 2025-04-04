@@ -3,7 +3,7 @@
   "version": "0.0.0+1",
   "description": "A modern markup language designed for personal knowledge management",
   "repository": "https://github.com/hiimsergey/tree-sitter-norsu",
-  "license": "GPL-3.0",
+  "license": "MIT",
   "author": {
     "name": "Sergey Lavrent",
     "email": "sergeylavrent@protonmail.com",

@@ -15,7 +15,7 @@ classifiers = [
 ]
 authors = [{ name = "Sergey Lavrent", email = "sergeylavrent@protonmail.com" }]
 requires-python = ">=3.10"
-license.text = "GPL-3.0"
+license.text = "MIT"
 readme = "README.md"
 
 [project.urls]

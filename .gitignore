@@ -33,9 +33,6 @@ dist/
 zig-cache/
 zig-out/
 
-# Example dirs
-example*
-
 # Grammar volatiles
 *.wasm
 *.obj
@@ -45,3 +42,6 @@ example*
 *.tar.gz
 *.tgz
 *.zip
+
+# Test dir
+tests/

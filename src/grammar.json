@@ -34,10 +34,14 @@
           "value": "/**"
         },
         {
+          "type": "STRING",
+          "value": "\n"
+        },
+        {
           "type": "REPEAT",
           "content": {
-            "type": "SYMBOL",
-            "name": "metadata_line"
+            "type": "STRING",
+            "value": "TODO metadata"
           }
         },
         {
@@ -46,171 +50,9 @@
         }
       ]
     },
-    "metadata_line": {
-      "type": "STRING",
-      "value": "TODO metadata"
-    },
     "_section": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "paragraph"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_heading"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "code_block"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "list"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "quote"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "separator"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "table"
-        }
-      ]
-    },
-    "paragraph": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "STRING",
-          "value": "TODO paragraph"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_break"
-        }
-      ]
-    },
-    "_heading": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "heading_1"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "heading_2"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "heading_3"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "heading_4"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "heading_5"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "heading_6"
-        }
-      ]
-    },
-    "heading_1": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "STRING",
-          "value": "#"
-        },
-        {
-          "type": "STRING",
-          "value": "TODO one"
-        }
-      ]
-    },
-    "heading_2": {
       "type": "STRING",
-      "value": "TODO heading 2"
-    },
-    "heading_3": {
-      "type": "STRING",
-      "value": "TODO heading 3"
-    },
-    "heading_4": {
-      "type": "STRING",
-      "value": "TODO heading 4"
-    },
-    "heading_5": {
-      "type": "STRING",
-      "value": "TODO heading 5"
-    },
-    "heading_6": {
-      "type": "STRING",
-      "value": "TODO heading 6"
-    },
-    "code_block": {
-      "type": "STRING",
-      "value": "TODO code block"
-    },
-    "list": {
-      "type": "STRING",
-      "value": "TODO list"
-    },
-    "quote": {
-      "type": "STRING",
-      "value": "TODO quote"
-    },
-    "separator": {
-      "type": "STRING",
-      "value": "TODO separator"
-    },
-    "table": {
-      "type": "STRING",
-      "value": "TODO table"
-    },
-    "_break": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "_newline"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_eof"
-        }
-      ]
-    },
-    "_newline": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "_line_ending"
-        },
-        {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "block_continuation"
-            },
-            {
-              "type": "BLANK"
-            }
-          ]
-        }
-      ]
+      "value": "TODO section"
     }
   },
   "extras": [
@@ -221,20 +63,7 @@
   ],
   "conflicts": [],
   "precedences": [],
-  "externals": [
-    {
-      "type": "SYMBOL",
-      "name": "_eof"
-    },
-    {
-      "type": "SYMBOL",
-      "name": "block_continuation"
-    },
-    {
-      "type": "SYMBOL",
-      "name": "_line_ending"
-    }
-  ],
+  "externals": [],
   "inline": [],
   "supertypes": [],
   "reserved": {}
