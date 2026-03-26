@@ -1,0 +1,53 @@
+================================================================================
+Headings
+================================================================================
+
+basic paragraph
+
+# heading 1
+section 1 paragraph
+
+## heading 2
+section 2 paragraph
+
+--------------------------------------------------------------------------------
+
+(document
+    (section0 (paragraph))
+    (section1 (heading1 (heading_text)) (paragraph))
+    (section2 (heading2 (heading_text)) (paragraph))
+)
+
+================================================================================
+Empty headings
+================================================================================
+
+## 
+
+--------------------------------------------------------------------------------
+
+(document
+    (section2 (heading2 (heading_text)))
+)
+
+================================================================================
+All headings
+================================================================================
+
+# heading 1
+## heading 2
+### heading 3
+#### heading 4
+##### heading 5
+###### heading 6
+
+--------------------------------------------------------------------------------
+
+(document
+    (section1 (heading1 (heading_text)))
+    (section2 (heading2 (heading_text)))
+    (section3 (heading3 (heading_text)))
+    (section4 (heading4 (heading_text)))
+    (section5 (heading5 (heading_text)))
+    (section6 (heading6 (heading_text)))
+)
