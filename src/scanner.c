@@ -16,6 +16,11 @@ bool tree_sitter_norsu_external_scanner_scan(
 	TSLexer *lexer,
 	const bool *valid_symbols
 ) {
+	// TODO NOW PLAN implement blank lines
+	// they span multiple blank lines, if possible
+	// invisible ofc
+	// they separate multiple paragraphs
+
 	// TODO REMOVE
 	printf("\n");
 	printf("starting\n");
@@ -44,8 +49,7 @@ bool tree_sitter_norsu_external_scanner_scan(
 	// Handles H*_MARKER
 	if (lexer->lookahead == '#' && valid_symbols[H1_MARKER]) {
 		lexer->advance(lexer, false);
-		while (lexer->lookahead == ' ' || lexer->lookahead == '\t')
-			lexer->advance(lexer, false);
+		while (is_hspace(lexer->lookahead)) lexer->advance(lexer, false);
 
 		lexer->result_symbol = H1_MARKER;
 		lexer->mark_end(lexer);

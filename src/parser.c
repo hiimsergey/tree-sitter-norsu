@@ -9,7 +9,7 @@
 #define LANGUAGE_VERSION 15
 #define STATE_COUNT 12
 #define LARGE_STATE_COUNT 4
-#define SYMBOL_COUNT 10
+#define SYMBOL_COUNT 9
 #define ALIAS_COUNT 0
 #define TOKEN_COUNT 4
 #define EXTERNAL_TOKEN_COUNT 3
@@ -26,9 +26,8 @@ enum ts_symbol_identifiers {
   sym_document = 4,
   sym_heading = 5,
   sym_paragraph = 6,
-  sym__line = 7,
-  aux_sym_document_repeat1 = 8,
-  aux_sym_paragraph_repeat1 = 9,
+  aux_sym_document_repeat1 = 7,
+  aux_sym_paragraph_repeat1 = 8,
 };
 
 static const char * const ts_symbol_names[] = {
@@ -39,7 +38,6 @@ static const char * const ts_symbol_names[] = {
   [sym_document] = "document",
   [sym_heading] = "heading",
   [sym_paragraph] = "paragraph",
-  [sym__line] = "_line",
   [aux_sym_document_repeat1] = "document_repeat1",
   [aux_sym_paragraph_repeat1] = "paragraph_repeat1",
 };
@@ -52,7 +50,6 @@ static const TSSymbol ts_symbol_map[] = {
   [sym_document] = sym_document,
   [sym_heading] = sym_heading,
   [sym_paragraph] = sym_paragraph,
-  [sym__line] = sym__line,
   [aux_sym_document_repeat1] = aux_sym_document_repeat1,
   [aux_sym_paragraph_repeat1] = aux_sym_paragraph_repeat1,
 };
@@ -84,10 +81,6 @@ static const TSSymbolMetadata ts_symbol_metadata[] = {
   },
   [sym_paragraph] = {
     .visible = true,
-    .named = true,
-  },
-  [sym__line] = {
-    .visible = false,
     .named = true,
   },
   [aux_sym_document_repeat1] = {
@@ -165,7 +158,6 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [sym_document] = STATE(10),
     [sym_heading] = STATE(2),
     [sym_paragraph] = STATE(2),
-    [sym__line] = STATE(4),
     [aux_sym_document_repeat1] = STATE(2),
     [aux_sym_paragraph_repeat1] = STATE(4),
     [ts_builtin_sym_end] = ACTIONS(3),
@@ -175,7 +167,6 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
   [STATE(2)] = {
     [sym_heading] = STATE(3),
     [sym_paragraph] = STATE(3),
-    [sym__line] = STATE(4),
     [aux_sym_document_repeat1] = STATE(3),
     [aux_sym_paragraph_repeat1] = STATE(4),
     [ts_builtin_sym_end] = ACTIONS(9),
@@ -185,7 +176,6 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
   [STATE(3)] = {
     [sym_heading] = STATE(3),
     [sym_paragraph] = STATE(3),
-    [sym__line] = STATE(4),
     [aux_sym_document_repeat1] = STATE(3),
     [aux_sym_paragraph_repeat1] = STATE(4),
     [ts_builtin_sym_end] = ACTIONS(11),
@@ -195,57 +185,54 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
 };
 
 static const uint16_t ts_small_parse_table[] = {
-  [0] = 3,
-    ACTIONS(5), 1,
+  [0] = 2,
+    STATE(5), 1,
+      aux_sym_paragraph_repeat1,
+    ACTIONS(19), 3,
       sym__text,
-    ACTIONS(19), 2,
       sym__h1_marker,
       ts_builtin_sym_end,
-    STATE(5), 2,
-      sym__line,
-      aux_sym_paragraph_repeat1,
-  [12] = 3,
+  [9] = 3,
     ACTIONS(23), 1,
       sym__text,
+    STATE(5), 1,
+      aux_sym_paragraph_repeat1,
     ACTIONS(21), 2,
       sym__h1_marker,
       ts_builtin_sym_end,
-    STATE(5), 2,
-      sym__line,
-      aux_sym_paragraph_repeat1,
-  [24] = 1,
+  [20] = 1,
+    ACTIONS(21), 3,
+      sym__text,
+      sym__h1_marker,
+      ts_builtin_sym_end,
+  [26] = 1,
     ACTIONS(26), 3,
       sym__text,
       sym__h1_marker,
       ts_builtin_sym_end,
-  [30] = 1,
-    ACTIONS(28), 3,
-      sym__text,
-      sym__h1_marker,
-      ts_builtin_sym_end,
+  [32] = 1,
+    ACTIONS(28), 1,
+      sym__newline,
   [36] = 1,
     ACTIONS(30), 1,
-      sym__newline,
+      sym__text,
   [40] = 1,
     ACTIONS(32), 1,
-      sym__text,
+      ts_builtin_sym_end,
   [44] = 1,
     ACTIONS(34), 1,
-      ts_builtin_sym_end,
-  [48] = 1,
-    ACTIONS(36), 1,
       sym__newline,
 };
 
 static const uint32_t ts_small_parse_table_map[] = {
   [SMALL_STATE(4)] = 0,
-  [SMALL_STATE(5)] = 12,
-  [SMALL_STATE(6)] = 24,
-  [SMALL_STATE(7)] = 30,
-  [SMALL_STATE(8)] = 36,
-  [SMALL_STATE(9)] = 40,
-  [SMALL_STATE(10)] = 44,
-  [SMALL_STATE(11)] = 48,
+  [SMALL_STATE(5)] = 9,
+  [SMALL_STATE(6)] = 20,
+  [SMALL_STATE(7)] = 26,
+  [SMALL_STATE(8)] = 32,
+  [SMALL_STATE(9)] = 36,
+  [SMALL_STATE(10)] = 40,
+  [SMALL_STATE(11)] = 44,
 };
 
 static const TSParseActionEntry ts_parse_actions[] = {
@@ -261,12 +248,11 @@ static const TSParseActionEntry ts_parse_actions[] = {
   [19] = {.entry = {.count = 1, .reusable = true}}, REDUCE(sym_paragraph, 1, 0, 0),
   [21] = {.entry = {.count = 1, .reusable = true}}, REDUCE(aux_sym_paragraph_repeat1, 2, 0, 0),
   [23] = {.entry = {.count = 2, .reusable = true}}, REDUCE(aux_sym_paragraph_repeat1, 2, 0, 0), SHIFT_REPEAT(8),
-  [26] = {.entry = {.count = 1, .reusable = true}}, REDUCE(sym__line, 2, 0, 0),
-  [28] = {.entry = {.count = 1, .reusable = true}}, REDUCE(sym_heading, 3, 0, 0),
-  [30] = {.entry = {.count = 1, .reusable = true}}, SHIFT(6),
-  [32] = {.entry = {.count = 1, .reusable = true}}, SHIFT(11),
-  [34] = {.entry = {.count = 1, .reusable = true}},  ACCEPT_INPUT(),
-  [36] = {.entry = {.count = 1, .reusable = true}}, SHIFT(7),
+  [26] = {.entry = {.count = 1, .reusable = true}}, REDUCE(sym_heading, 3, 0, 0),
+  [28] = {.entry = {.count = 1, .reusable = true}}, SHIFT(6),
+  [30] = {.entry = {.count = 1, .reusable = true}}, SHIFT(11),
+  [32] = {.entry = {.count = 1, .reusable = true}},  ACCEPT_INPUT(),
+  [34] = {.entry = {.count = 1, .reusable = true}}, SHIFT(7),
 };
 
 enum ts_external_scanner_symbol_identifiers {

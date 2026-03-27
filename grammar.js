@@ -9,31 +9,23 @@
 
 export default grammar({
 	name: "norsu",
-
 	rules: {
 		document: $ => repeat(choice(
 			$.heading,
 			$.paragraph
 		)),
-
-		// TODO NOW DEBUG dont let it be a paragraph
-		heading: $ => prec(1, seq(
+		heading: $ => prec(2, seq(
 			$._h1_marker,
 			$._text,
-			$._newline
+			$._newline,
 		)),
-
-		paragraph: $ => prec.right(repeat1($._line)),
-
-		_line: $ => seq(
-			$._text,
-			$._newline
-		),
+		paragraph: $ => prec.right(1, repeat1(
+			seq($._text, $._newline)
+		))
 	},
-
 	externals: $ => [
 		$._newline,
 		$._text,
-		$._h1_marker
+		$._h1_marker,
 	]
 });
