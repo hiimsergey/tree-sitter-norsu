@@ -19,21 +19,25 @@
       }
     },
     "heading": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "_h1_marker"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_text"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_newline"
-        }
-      ]
+      "type": "PREC",
+      "value": 1,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "_h1_marker"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "_text"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "_newline"
+          }
+        ]
+      }
     },
     "paragraph": {
       "type": "PREC_RIGHT",

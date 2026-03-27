@@ -31,25 +31,22 @@ bool tree_sitter_norsu_external_scanner_scan(
 			printf("settling for NEWLINE (eof flavor)\n");
 			return true;
 		}
-
-		switch (lexer->lookahead) {
-			case '\r':
-				lexer->advance(lexer, false);
-				if (lexer->lookahead != '\n') break;
-			case '\n':
-				lexer->advance(lexer, false);
-			default:
-				goto out_newline;
+		if (lexer->lookahead == '\r') lexer->advance(lexer, false);
+		if (lexer->lookahead == '\n') {
+			lexer->advance(lexer, false);
+			lexer->result_symbol = NEWLINE;
+			lexer->mark_end(lexer);
+			printf("settling for NEWLINE\n");
+			return true;
 		}
-		lexer->result_symbol = NEWLINE;
-		lexer->mark_end(lexer);
-		printf("settling for NEWLINE\n");
-		return true;
 	}
-out_newline:
 
 	// Handles H*_MARKER
 	if (lexer->lookahead == '#' && valid_symbols[H1_MARKER]) {
+		lexer->advance(lexer, false);
+		while (lexer->lookahead == ' ' || lexer->lookahead == '\t')
+			lexer->advance(lexer, false);
+
 		lexer->result_symbol = H1_MARKER;
 		lexer->mark_end(lexer);
 		printf("settling for H1_MARKER\n");
@@ -58,9 +55,19 @@ out_newline:
 
 	// Handles TEXT
 	// TODO CONSIDER !lexer->eof(lexer)
-	if (valid_symbols[TEXT] && !lexer->eof(lexer)) {
-		lexer->result_symbol = TEXT;
+	if (valid_symbols[TEXT] &&
+		!lexer->eof(lexer) &&
+		!is_newline(lexer->lookahead))
+	{
+		while (valid_symbols[TEXT] &&
+			!lexer->eof(lexer) &&
+			!is_newline(lexer->lookahead))
+		{
+			lexer->advance(lexer, false);
+		}
+
 		lexer->mark_end(lexer);
+		lexer->result_symbol = TEXT;
 		printf("settling for TEXT\n");
 		return true;
 	}

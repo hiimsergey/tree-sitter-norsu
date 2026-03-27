@@ -17,13 +17,14 @@ export default grammar({
 		)),
 
 		// TODO NOW DEBUG dont let it be a paragraph
-		heading: $ => seq(
+		heading: $ => prec(1, seq(
 			$._h1_marker,
 			$._text,
 			$._newline
-		),
+		)),
 
 		paragraph: $ => prec.right(repeat1($._line)),
+
 		_line: $ => seq(
 			$._text,
 			$._newline
