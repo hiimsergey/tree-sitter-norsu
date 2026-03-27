@@ -23,8 +23,11 @@ export default grammar({
 			$._newline
 		),
 
-		paragraph: $ => prec.right(repeat1(seq($._text, $._newline))),
-
+		paragraph: $ => prec.right(repeat1($._line)),
+		_line: $ => seq(
+			$._text,
+			$._newline
+		),
 		_text: $ => /[^\r\n]+/,
 
 		// TODO move to scanner
