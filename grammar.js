@@ -18,7 +18,7 @@ export default grammar({
 
 		// TODO NOW DEBUG dont let it be a paragraph
 		heading: $ => seq(
-			"#",
+			$._h1_marker,
 			$._text,
 			$._newline
 		),
@@ -28,10 +28,11 @@ export default grammar({
 			$._text,
 			$._newline
 		),
-		_text: $ => /[^\r\n]+/,
+	},
 
-		// TODO move to scanner
-		// TODO recognize EOF
-		_newline: $ => /\r?\n/
-	}
+	externals: $ => [
+		$._newline,
+		$._text,
+		$._h1_marker
+	]
 });

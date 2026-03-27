@@ -28,9 +28,5 @@
     "type": "paragraph",
     "named": true,
     "fields": {}
-  },
-  {
-    "type": "#",
-    "named": false
   }
 ]

@@ -12,7 +12,7 @@
 #define SYMBOL_COUNT 10
 #define ALIAS_COUNT 0
 #define TOKEN_COUNT 4
-#define EXTERNAL_TOKEN_COUNT 0
+#define EXTERNAL_TOKEN_COUNT 3
 #define FIELD_COUNT 0
 #define MAX_ALIAS_SEQUENCE_LENGTH 3
 #define MAX_RESERVED_WORD_SET_SIZE 0
@@ -20,9 +20,9 @@
 #define SUPERTYPE_COUNT 0
 
 enum ts_symbol_identifiers {
-  anon_sym_POUND = 1,
+  sym__newline = 1,
   sym__text = 2,
-  sym__newline = 3,
+  sym__h1_marker = 3,
   sym_document = 4,
   sym_heading = 5,
   sym_paragraph = 6,
@@ -33,9 +33,9 @@ enum ts_symbol_identifiers {
 
 static const char * const ts_symbol_names[] = {
   [ts_builtin_sym_end] = "end",
-  [anon_sym_POUND] = "#",
-  [sym__text] = "_text",
   [sym__newline] = "_newline",
+  [sym__text] = "_text",
+  [sym__h1_marker] = "_h1_marker",
   [sym_document] = "document",
   [sym_heading] = "heading",
   [sym_paragraph] = "paragraph",
@@ -46,9 +46,9 @@ static const char * const ts_symbol_names[] = {
 
 static const TSSymbol ts_symbol_map[] = {
   [ts_builtin_sym_end] = ts_builtin_sym_end,
-  [anon_sym_POUND] = anon_sym_POUND,
-  [sym__text] = sym__text,
   [sym__newline] = sym__newline,
+  [sym__text] = sym__text,
+  [sym__h1_marker] = sym__h1_marker,
   [sym_document] = sym_document,
   [sym_heading] = sym_heading,
   [sym_paragraph] = sym_paragraph,
@@ -62,15 +62,15 @@ static const TSSymbolMetadata ts_symbol_metadata[] = {
     .visible = false,
     .named = true,
   },
-  [anon_sym_POUND] = {
-    .visible = true,
-    .named = false,
+  [sym__newline] = {
+    .visible = false,
+    .named = true,
   },
   [sym__text] = {
     .visible = false,
     .named = true,
   },
-  [sym__newline] = {
+  [sym__h1_marker] = {
     .visible = false,
     .named = true,
   },
@@ -128,65 +128,11 @@ static bool ts_lex(TSLexer *lexer, TSStateId state) {
   eof = lexer->eof(lexer);
   switch (state) {
     case 0:
-      if (eof) ADVANCE(3);
-      if (lookahead == '#') ADVANCE(4);
-      if (lookahead == '\n' ||
-          lookahead == '\r') SKIP(0);
-      if (('\t' <= lookahead && lookahead <= '\f') ||
-          lookahead == ' ') ADVANCE(5);
-      if (lookahead != 0) ADVANCE(7);
+      ACCEPT_TOKEN(ts_builtin_sym_end);
+      if (eof) ADVANCE(1);
       END_STATE();
     case 1:
-      if (lookahead == '\n') ADVANCE(8);
-      if (lookahead == '\r') ADVANCE(1);
-      if (('\t' <= lookahead && lookahead <= '\f') ||
-          lookahead == ' ') SKIP(1);
-      END_STATE();
-    case 2:
-      if (lookahead == '\n' ||
-          lookahead == '\r') SKIP(2);
-      if (('\t' <= lookahead && lookahead <= '\f') ||
-          lookahead == ' ') ADVANCE(6);
-      if (lookahead != 0) ADVANCE(7);
-      END_STATE();
-    case 3:
       ACCEPT_TOKEN(ts_builtin_sym_end);
-      END_STATE();
-    case 4:
-      ACCEPT_TOKEN(anon_sym_POUND);
-      if (lookahead != 0 &&
-          lookahead != '\n' &&
-          lookahead != '\r') ADVANCE(7);
-      END_STATE();
-    case 5:
-      ACCEPT_TOKEN(sym__text);
-      if (lookahead == '#') ADVANCE(4);
-      if (lookahead == '\t' ||
-          lookahead == 0x0b ||
-          lookahead == '\f' ||
-          lookahead == ' ') ADVANCE(5);
-      if (lookahead != 0 &&
-          (lookahead < '\t' || '\r' < lookahead)) ADVANCE(7);
-      END_STATE();
-    case 6:
-      ACCEPT_TOKEN(sym__text);
-      if (lookahead == '\t' ||
-          lookahead == 0x0b ||
-          lookahead == '\f' ||
-          lookahead == ' ') ADVANCE(6);
-      if (lookahead != 0 &&
-          (lookahead < '\t' || '\r' < lookahead)) ADVANCE(7);
-      END_STATE();
-    case 7:
-      ACCEPT_TOKEN(sym__text);
-      if (lookahead != 0 &&
-          lookahead != '\n' &&
-          lookahead != '\r') ADVANCE(7);
-      END_STATE();
-    case 8:
-      ACCEPT_TOKEN(sym__newline);
-      if (lookahead == '\n') ADVANCE(8);
-      if (lookahead == '\r') ADVANCE(1);
       END_STATE();
     default:
       return false;
@@ -194,25 +140,26 @@ static bool ts_lex(TSLexer *lexer, TSStateId state) {
 }
 
 static const TSLexerMode ts_lex_modes[STATE_COUNT] = {
-  [0] = {.lex_state = 0},
-  [1] = {.lex_state = 0},
-  [2] = {.lex_state = 0},
-  [3] = {.lex_state = 0},
-  [4] = {.lex_state = 0},
-  [5] = {.lex_state = 0},
-  [6] = {.lex_state = 0},
-  [7] = {.lex_state = 0},
-  [8] = {.lex_state = 2},
-  [9] = {.lex_state = 1},
+  [0] = {.lex_state = 0, .external_lex_state = 1},
+  [1] = {.lex_state = 0, .external_lex_state = 2},
+  [2] = {.lex_state = 0, .external_lex_state = 2},
+  [3] = {.lex_state = 0, .external_lex_state = 2},
+  [4] = {.lex_state = 0, .external_lex_state = 2},
+  [5] = {.lex_state = 0, .external_lex_state = 2},
+  [6] = {.lex_state = 0, .external_lex_state = 2},
+  [7] = {.lex_state = 0, .external_lex_state = 2},
+  [8] = {.lex_state = 0, .external_lex_state = 3},
+  [9] = {.lex_state = 0, .external_lex_state = 4},
   [10] = {.lex_state = 0},
-  [11] = {.lex_state = 1},
+  [11] = {.lex_state = 0, .external_lex_state = 3},
 };
 
 static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
   [STATE(0)] = {
     [ts_builtin_sym_end] = ACTIONS(1),
-    [anon_sym_POUND] = ACTIONS(1),
+    [sym__newline] = ACTIONS(1),
     [sym__text] = ACTIONS(1),
+    [sym__h1_marker] = ACTIONS(1),
   },
   [STATE(1)] = {
     [sym_document] = STATE(10),
@@ -222,8 +169,8 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [aux_sym_document_repeat1] = STATE(2),
     [aux_sym_paragraph_repeat1] = STATE(4),
     [ts_builtin_sym_end] = ACTIONS(3),
-    [anon_sym_POUND] = ACTIONS(5),
-    [sym__text] = ACTIONS(7),
+    [sym__text] = ACTIONS(5),
+    [sym__h1_marker] = ACTIONS(7),
   },
   [STATE(2)] = {
     [sym_heading] = STATE(3),
@@ -232,8 +179,8 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [aux_sym_document_repeat1] = STATE(3),
     [aux_sym_paragraph_repeat1] = STATE(4),
     [ts_builtin_sym_end] = ACTIONS(9),
-    [anon_sym_POUND] = ACTIONS(5),
-    [sym__text] = ACTIONS(7),
+    [sym__text] = ACTIONS(5),
+    [sym__h1_marker] = ACTIONS(7),
   },
   [STATE(3)] = {
     [sym_heading] = STATE(3),
@@ -242,96 +189,125 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [aux_sym_document_repeat1] = STATE(3),
     [aux_sym_paragraph_repeat1] = STATE(4),
     [ts_builtin_sym_end] = ACTIONS(11),
-    [anon_sym_POUND] = ACTIONS(13),
-    [sym__text] = ACTIONS(16),
+    [sym__text] = ACTIONS(13),
+    [sym__h1_marker] = ACTIONS(16),
   },
 };
 
 static const uint16_t ts_small_parse_table[] = {
   [0] = 3,
-    ACTIONS(19), 1,
-      ts_builtin_sym_end,
-    ACTIONS(21), 2,
-      anon_sym_POUND,
+    ACTIONS(5), 1,
       sym__text,
+    ACTIONS(19), 2,
+      sym__h1_marker,
+      ts_builtin_sym_end,
     STATE(5), 2,
       sym__line,
       aux_sym_paragraph_repeat1,
-  [12] = 4,
+  [12] = 3,
     ACTIONS(23), 1,
-      ts_builtin_sym_end,
-    ACTIONS(25), 1,
-      anon_sym_POUND,
-    ACTIONS(27), 1,
       sym__text,
+    ACTIONS(21), 2,
+      sym__h1_marker,
+      ts_builtin_sym_end,
     STATE(5), 2,
       sym__line,
       aux_sym_paragraph_repeat1,
-  [26] = 2,
-    ACTIONS(30), 1,
-      ts_builtin_sym_end,
-    ACTIONS(32), 2,
-      anon_sym_POUND,
+  [24] = 1,
+    ACTIONS(26), 3,
       sym__text,
-  [34] = 2,
+      sym__h1_marker,
+      ts_builtin_sym_end,
+  [30] = 1,
+    ACTIONS(28), 3,
+      sym__text,
+      sym__h1_marker,
+      ts_builtin_sym_end,
+  [36] = 1,
+    ACTIONS(30), 1,
+      sym__newline,
+  [40] = 1,
+    ACTIONS(32), 1,
+      sym__text,
+  [44] = 1,
     ACTIONS(34), 1,
       ts_builtin_sym_end,
-    ACTIONS(36), 2,
-      anon_sym_POUND,
-      sym__text,
-  [42] = 1,
-    ACTIONS(38), 1,
-      sym__text,
-  [46] = 1,
-    ACTIONS(40), 1,
-      sym__newline,
-  [50] = 1,
-    ACTIONS(42), 1,
-      ts_builtin_sym_end,
-  [54] = 1,
-    ACTIONS(44), 1,
+  [48] = 1,
+    ACTIONS(36), 1,
       sym__newline,
 };
 
 static const uint32_t ts_small_parse_table_map[] = {
   [SMALL_STATE(4)] = 0,
   [SMALL_STATE(5)] = 12,
-  [SMALL_STATE(6)] = 26,
-  [SMALL_STATE(7)] = 34,
-  [SMALL_STATE(8)] = 42,
-  [SMALL_STATE(9)] = 46,
-  [SMALL_STATE(10)] = 50,
-  [SMALL_STATE(11)] = 54,
+  [SMALL_STATE(6)] = 24,
+  [SMALL_STATE(7)] = 30,
+  [SMALL_STATE(8)] = 36,
+  [SMALL_STATE(9)] = 40,
+  [SMALL_STATE(10)] = 44,
+  [SMALL_STATE(11)] = 48,
 };
 
 static const TSParseActionEntry ts_parse_actions[] = {
   [0] = {.entry = {.count = 0, .reusable = false}},
   [1] = {.entry = {.count = 1, .reusable = false}}, RECOVER(),
   [3] = {.entry = {.count = 1, .reusable = true}}, REDUCE(sym_document, 0, 0, 0),
-  [5] = {.entry = {.count = 1, .reusable = false}}, SHIFT(8),
-  [7] = {.entry = {.count = 1, .reusable = false}}, SHIFT(9),
+  [5] = {.entry = {.count = 1, .reusable = true}}, SHIFT(8),
+  [7] = {.entry = {.count = 1, .reusable = true}}, SHIFT(9),
   [9] = {.entry = {.count = 1, .reusable = true}}, REDUCE(sym_document, 1, 0, 0),
   [11] = {.entry = {.count = 1, .reusable = true}}, REDUCE(aux_sym_document_repeat1, 2, 0, 0),
-  [13] = {.entry = {.count = 2, .reusable = false}}, REDUCE(aux_sym_document_repeat1, 2, 0, 0), SHIFT_REPEAT(8),
-  [16] = {.entry = {.count = 2, .reusable = false}}, REDUCE(aux_sym_document_repeat1, 2, 0, 0), SHIFT_REPEAT(9),
+  [13] = {.entry = {.count = 2, .reusable = true}}, REDUCE(aux_sym_document_repeat1, 2, 0, 0), SHIFT_REPEAT(8),
+  [16] = {.entry = {.count = 2, .reusable = true}}, REDUCE(aux_sym_document_repeat1, 2, 0, 0), SHIFT_REPEAT(9),
   [19] = {.entry = {.count = 1, .reusable = true}}, REDUCE(sym_paragraph, 1, 0, 0),
-  [21] = {.entry = {.count = 1, .reusable = false}}, REDUCE(sym_paragraph, 1, 0, 0),
-  [23] = {.entry = {.count = 1, .reusable = true}}, REDUCE(aux_sym_paragraph_repeat1, 2, 0, 0),
-  [25] = {.entry = {.count = 1, .reusable = false}}, REDUCE(aux_sym_paragraph_repeat1, 2, 0, 0),
-  [27] = {.entry = {.count = 2, .reusable = false}}, REDUCE(aux_sym_paragraph_repeat1, 2, 0, 0), SHIFT_REPEAT(9),
-  [30] = {.entry = {.count = 1, .reusable = true}}, REDUCE(sym__line, 2, 0, 0),
-  [32] = {.entry = {.count = 1, .reusable = false}}, REDUCE(sym__line, 2, 0, 0),
-  [34] = {.entry = {.count = 1, .reusable = true}}, REDUCE(sym_heading, 3, 0, 0),
-  [36] = {.entry = {.count = 1, .reusable = false}}, REDUCE(sym_heading, 3, 0, 0),
-  [38] = {.entry = {.count = 1, .reusable = true}}, SHIFT(11),
-  [40] = {.entry = {.count = 1, .reusable = true}}, SHIFT(6),
-  [42] = {.entry = {.count = 1, .reusable = true}},  ACCEPT_INPUT(),
-  [44] = {.entry = {.count = 1, .reusable = true}}, SHIFT(7),
+  [21] = {.entry = {.count = 1, .reusable = true}}, REDUCE(aux_sym_paragraph_repeat1, 2, 0, 0),
+  [23] = {.entry = {.count = 2, .reusable = true}}, REDUCE(aux_sym_paragraph_repeat1, 2, 0, 0), SHIFT_REPEAT(8),
+  [26] = {.entry = {.count = 1, .reusable = true}}, REDUCE(sym__line, 2, 0, 0),
+  [28] = {.entry = {.count = 1, .reusable = true}}, REDUCE(sym_heading, 3, 0, 0),
+  [30] = {.entry = {.count = 1, .reusable = true}}, SHIFT(6),
+  [32] = {.entry = {.count = 1, .reusable = true}}, SHIFT(11),
+  [34] = {.entry = {.count = 1, .reusable = true}},  ACCEPT_INPUT(),
+  [36] = {.entry = {.count = 1, .reusable = true}}, SHIFT(7),
+};
+
+enum ts_external_scanner_symbol_identifiers {
+  ts_external_token__newline = 0,
+  ts_external_token__text = 1,
+  ts_external_token__h1_marker = 2,
+};
+
+static const TSSymbol ts_external_scanner_symbol_map[EXTERNAL_TOKEN_COUNT] = {
+  [ts_external_token__newline] = sym__newline,
+  [ts_external_token__text] = sym__text,
+  [ts_external_token__h1_marker] = sym__h1_marker,
+};
+
+static const bool ts_external_scanner_states[5][EXTERNAL_TOKEN_COUNT] = {
+  [1] = {
+    [ts_external_token__newline] = true,
+    [ts_external_token__text] = true,
+    [ts_external_token__h1_marker] = true,
+  },
+  [2] = {
+    [ts_external_token__text] = true,
+    [ts_external_token__h1_marker] = true,
+  },
+  [3] = {
+    [ts_external_token__newline] = true,
+  },
+  [4] = {
+    [ts_external_token__text] = true,
+  },
 };
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+void *tree_sitter_norsu_external_scanner_create(void);
+void tree_sitter_norsu_external_scanner_destroy(void *);
+bool tree_sitter_norsu_external_scanner_scan(void *, TSLexer *, const bool *);
+unsigned tree_sitter_norsu_external_scanner_serialize(void *, char *);
+void tree_sitter_norsu_external_scanner_deserialize(void *, const char *, unsigned);
+
 #ifdef TREE_SITTER_HIDE_SYMBOLS
 #define TS_PUBLIC
 #elif defined(_WIN32)
@@ -364,6 +340,15 @@ TS_PUBLIC const TSLanguage *tree_sitter_norsu(void) {
     .alias_sequences = &ts_alias_sequences[0][0],
     .lex_modes = (const void*)ts_lex_modes,
     .lex_fn = ts_lex,
+    .external_scanner = {
+      &ts_external_scanner_states[0][0],
+      ts_external_scanner_symbol_map,
+      tree_sitter_norsu_external_scanner_create,
+      tree_sitter_norsu_external_scanner_destroy,
+      tree_sitter_norsu_external_scanner_scan,
+      tree_sitter_norsu_external_scanner_serialize,
+      tree_sitter_norsu_external_scanner_deserialize,
+    },
     .primary_state_ids = ts_primary_state_ids,
     .name = "norsu",
     .max_reserved_word_set_size = 0,
