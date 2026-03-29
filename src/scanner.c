@@ -4,7 +4,12 @@ typedef enum {
 	NEWLINE,
 	BLANK_LINE,
 	TEXT,
-	H1_MARKER
+	H1_MARKER,
+	H2_MARKER,
+	H3_MARKER,
+	H4_MARKER,
+	H5_MARKER,
+	H6_MARKER
 } TokenType;
 
 static inline bool is_hspace(int32_t c) { return c == ' ' || c == '\t'; }
@@ -45,13 +50,19 @@ bool tree_sitter_norsu_external_scanner_scan(
 		}
 	}
 
-	if (valid_symbols[H1_MARKER] && lexer->lookahead == '#') {
-		lexer->advance(lexer, false);
-		while (is_hspace(lexer->lookahead)) lexer->advance(lexer, false);
+	if (valid_symbols[H1_MARKER]) {
+		int count = 0;
+		while (lexer->lookahead == '#' && count <= 6) {
+			lexer->advance(lexer, false);
+			++count;
+		}
+		if (count >= 1 && count <= 6 && is_hspace(lexer->lookahead)) {
+			while (is_hspace(lexer->lookahead)) lexer->advance(lexer, false);
 
-		lexer->result_symbol = H1_MARKER;
-		lexer->mark_end(lexer);
-		return true;
+			lexer->result_symbol = H1_MARKER + count - 1;
+			lexer->mark_end(lexer);
+			return true;
+		}
 	}
 
 	if (valid_symbols[TEXT] &&

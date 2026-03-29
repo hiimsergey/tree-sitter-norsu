@@ -9,7 +9,236 @@
       "required": false,
       "types": [
         {
-          "type": "heading",
+          "type": "paragraph",
+          "named": true
+        },
+        {
+          "type": "section1",
+          "named": true
+        },
+        {
+          "type": "section2",
+          "named": true
+        },
+        {
+          "type": "section3",
+          "named": true
+        },
+        {
+          "type": "section4",
+          "named": true
+        },
+        {
+          "type": "section5",
+          "named": true
+        },
+        {
+          "type": "section6",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "heading1",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "heading2",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "heading3",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "heading4",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "heading5",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "heading6",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "paragraph",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "section1",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "heading1",
+          "named": true
+        },
+        {
+          "type": "paragraph",
+          "named": true
+        },
+        {
+          "type": "section2",
+          "named": true
+        },
+        {
+          "type": "section3",
+          "named": true
+        },
+        {
+          "type": "section4",
+          "named": true
+        },
+        {
+          "type": "section5",
+          "named": true
+        },
+        {
+          "type": "section6",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "section2",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "heading2",
+          "named": true
+        },
+        {
+          "type": "paragraph",
+          "named": true
+        },
+        {
+          "type": "section3",
+          "named": true
+        },
+        {
+          "type": "section4",
+          "named": true
+        },
+        {
+          "type": "section5",
+          "named": true
+        },
+        {
+          "type": "section6",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "section3",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "heading3",
+          "named": true
+        },
+        {
+          "type": "paragraph",
+          "named": true
+        },
+        {
+          "type": "section4",
+          "named": true
+        },
+        {
+          "type": "section5",
+          "named": true
+        },
+        {
+          "type": "section6",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "section4",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "heading4",
+          "named": true
+        },
+        {
+          "type": "paragraph",
+          "named": true
+        },
+        {
+          "type": "section5",
+          "named": true
+        },
+        {
+          "type": "section6",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "section5",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "heading5",
+          "named": true
+        },
+        {
+          "type": "paragraph",
+          "named": true
+        },
+        {
+          "type": "section6",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "section6",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "heading6",
           "named": true
         },
         {
@@ -18,15 +247,5 @@
         }
       ]
     }
-  },
-  {
-    "type": "heading",
-    "named": true,
-    "fields": {}
-  },
-  {
-    "type": "paragraph",
-    "named": true,
-    "fields": {}
   }
 ]
