@@ -12,11 +12,12 @@ export default grammar({
 	rules: {
 		document: $ => repeat(choice(
 			$.heading,
-			$.paragraph
+			$.paragraph,
+			$._blank_line
 		)),
 		heading: $ => prec(2, seq(
 			$._h1_marker,
-			optional($._text), // TODO NOW CONSIDER
+			optional($._text),
 			$._newline
 		)),
 		paragraph: $ => prec.right(1, repeat1(
@@ -25,6 +26,7 @@ export default grammar({
 	},
 	externals: $ => [
 		$._newline,
+		$._blank_line,
 		$._text,
 		$._h1_marker
 	]
@@ -33,7 +35,7 @@ export default grammar({
 // TODO PLAN TEST
 // two consecutive headings
 // empty headings
-// heading, blank line, paragraph
+// heading, _blank line, paragraph
 // multiline paragraph
 
 // TODO
