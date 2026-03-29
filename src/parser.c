@@ -7,7 +7,7 @@
 #endif
 
 #define LANGUAGE_VERSION 15
-#define STATE_COUNT 12
+#define STATE_COUNT 13
 #define LARGE_STATE_COUNT 4
 #define SYMBOL_COUNT 9
 #define ALIAS_COUNT 0
@@ -114,6 +114,7 @@ static const TSStateId ts_primary_state_ids[STATE_COUNT] = {
   [9] = 9,
   [10] = 10,
   [11] = 11,
+  [12] = 12,
 };
 
 static bool ts_lex(TSLexer *lexer, TSStateId state) {
@@ -141,10 +142,11 @@ static const TSLexerMode ts_lex_modes[STATE_COUNT] = {
   [5] = {.lex_state = 0, .external_lex_state = 2},
   [6] = {.lex_state = 0, .external_lex_state = 2},
   [7] = {.lex_state = 0, .external_lex_state = 2},
-  [8] = {.lex_state = 0, .external_lex_state = 3},
-  [9] = {.lex_state = 0, .external_lex_state = 4},
-  [10] = {.lex_state = 0},
-  [11] = {.lex_state = 0, .external_lex_state = 3},
+  [8] = {.lex_state = 0, .external_lex_state = 2},
+  [9] = {.lex_state = 0, .external_lex_state = 3},
+  [10] = {.lex_state = 0, .external_lex_state = 4},
+  [11] = {.lex_state = 0},
+  [12] = {.lex_state = 0, .external_lex_state = 4},
 };
 
 static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
@@ -155,7 +157,7 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [sym__h1_marker] = ACTIONS(1),
   },
   [STATE(1)] = {
-    [sym_document] = STATE(10),
+    [sym_document] = STATE(11),
     [sym_heading] = STATE(2),
     [sym_paragraph] = STATE(2),
     [aux_sym_document_repeat1] = STATE(2),
@@ -211,16 +213,23 @@ static const uint16_t ts_small_parse_table[] = {
       sym__h1_marker,
       ts_builtin_sym_end,
   [32] = 1,
-    ACTIONS(28), 1,
-      sym__newline,
-  [36] = 1,
-    ACTIONS(30), 1,
+    ACTIONS(28), 3,
       sym__text,
-  [40] = 1,
-    ACTIONS(32), 1,
+      sym__h1_marker,
       ts_builtin_sym_end,
-  [44] = 1,
+  [38] = 2,
+    ACTIONS(30), 1,
+      sym__newline,
+    ACTIONS(32), 1,
+      sym__text,
+  [45] = 1,
     ACTIONS(34), 1,
+      sym__newline,
+  [49] = 1,
+    ACTIONS(36), 1,
+      ts_builtin_sym_end,
+  [53] = 1,
+    ACTIONS(38), 1,
       sym__newline,
 };
 
@@ -230,29 +239,32 @@ static const uint32_t ts_small_parse_table_map[] = {
   [SMALL_STATE(6)] = 20,
   [SMALL_STATE(7)] = 26,
   [SMALL_STATE(8)] = 32,
-  [SMALL_STATE(9)] = 36,
-  [SMALL_STATE(10)] = 40,
-  [SMALL_STATE(11)] = 44,
+  [SMALL_STATE(9)] = 38,
+  [SMALL_STATE(10)] = 45,
+  [SMALL_STATE(11)] = 49,
+  [SMALL_STATE(12)] = 53,
 };
 
 static const TSParseActionEntry ts_parse_actions[] = {
   [0] = {.entry = {.count = 0, .reusable = false}},
   [1] = {.entry = {.count = 1, .reusable = false}}, RECOVER(),
   [3] = {.entry = {.count = 1, .reusable = true}}, REDUCE(sym_document, 0, 0, 0),
-  [5] = {.entry = {.count = 1, .reusable = true}}, SHIFT(8),
+  [5] = {.entry = {.count = 1, .reusable = true}}, SHIFT(10),
   [7] = {.entry = {.count = 1, .reusable = true}}, SHIFT(9),
   [9] = {.entry = {.count = 1, .reusable = true}}, REDUCE(sym_document, 1, 0, 0),
   [11] = {.entry = {.count = 1, .reusable = true}}, REDUCE(aux_sym_document_repeat1, 2, 0, 0),
-  [13] = {.entry = {.count = 2, .reusable = true}}, REDUCE(aux_sym_document_repeat1, 2, 0, 0), SHIFT_REPEAT(8),
+  [13] = {.entry = {.count = 2, .reusable = true}}, REDUCE(aux_sym_document_repeat1, 2, 0, 0), SHIFT_REPEAT(10),
   [16] = {.entry = {.count = 2, .reusable = true}}, REDUCE(aux_sym_document_repeat1, 2, 0, 0), SHIFT_REPEAT(9),
   [19] = {.entry = {.count = 1, .reusable = true}}, REDUCE(sym_paragraph, 1, 0, 0),
   [21] = {.entry = {.count = 1, .reusable = true}}, REDUCE(aux_sym_paragraph_repeat1, 2, 0, 0),
-  [23] = {.entry = {.count = 2, .reusable = true}}, REDUCE(aux_sym_paragraph_repeat1, 2, 0, 0), SHIFT_REPEAT(8),
-  [26] = {.entry = {.count = 1, .reusable = true}}, REDUCE(sym_heading, 3, 0, 0),
-  [28] = {.entry = {.count = 1, .reusable = true}}, SHIFT(6),
-  [30] = {.entry = {.count = 1, .reusable = true}}, SHIFT(11),
-  [32] = {.entry = {.count = 1, .reusable = true}},  ACCEPT_INPUT(),
-  [34] = {.entry = {.count = 1, .reusable = true}}, SHIFT(7),
+  [23] = {.entry = {.count = 2, .reusable = true}}, REDUCE(aux_sym_paragraph_repeat1, 2, 0, 0), SHIFT_REPEAT(10),
+  [26] = {.entry = {.count = 1, .reusable = true}}, REDUCE(sym_heading, 2, 0, 0),
+  [28] = {.entry = {.count = 1, .reusable = true}}, REDUCE(sym_heading, 3, 0, 0),
+  [30] = {.entry = {.count = 1, .reusable = true}}, SHIFT(7),
+  [32] = {.entry = {.count = 1, .reusable = true}}, SHIFT(12),
+  [34] = {.entry = {.count = 1, .reusable = true}}, SHIFT(6),
+  [36] = {.entry = {.count = 1, .reusable = true}},  ACCEPT_INPUT(),
+  [38] = {.entry = {.count = 1, .reusable = true}}, SHIFT(8),
 };
 
 enum ts_external_scanner_symbol_identifiers {
@@ -279,9 +291,10 @@ static const bool ts_external_scanner_states[5][EXTERNAL_TOKEN_COUNT] = {
   },
   [3] = {
     [ts_external_token__newline] = true,
+    [ts_external_token__text] = true,
   },
   [4] = {
-    [ts_external_token__text] = true,
+    [ts_external_token__newline] = true,
   },
 };
 

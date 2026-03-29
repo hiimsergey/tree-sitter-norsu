@@ -16,8 +16,8 @@ export default grammar({
 		)),
 		heading: $ => prec(2, seq(
 			$._h1_marker,
-			$._text,
-			$._newline,
+			optional($._text), // TODO NOW CONSIDER
+			$._newline
 		)),
 		paragraph: $ => prec.right(1, repeat1(
 			seq($._text, $._newline)
@@ -26,6 +26,16 @@ export default grammar({
 	externals: $ => [
 		$._newline,
 		$._text,
-		$._h1_marker,
+		$._h1_marker
 	]
 });
+
+// TODO PLAN TEST
+// two consecutive headings
+// empty headings
+// heading, blank line, paragraph
+// multiline paragraph
+
+// TODO
+// should i use optional($._text) for empty heading texts or texts of length 0?
+// ^ what's easier to query?

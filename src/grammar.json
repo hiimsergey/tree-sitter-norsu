@@ -29,8 +29,16 @@
             "name": "_h1_marker"
           },
           {
-            "type": "SYMBOL",
-            "name": "_text"
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "_text"
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
           },
           {
             "type": "SYMBOL",

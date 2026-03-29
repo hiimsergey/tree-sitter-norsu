@@ -24,50 +24,37 @@ bool tree_sitter_norsu_external_scanner_scan(
 	// TODO REMOVE
 	printf("\n");
 	printf("starting\n");
-	printf("lookahead is %c\n", lexer->lookahead);
+	printf("lookahead is '%c'\n", lexer->lookahead);
 	printf("newline valid: %d\n", valid_symbols[NEWLINE]);
 	printf("text valid: %d\n", valid_symbols[TEXT]);
 	printf("heading valid: %d\n", valid_symbols[H1_MARKER]);
 
 	if (valid_symbols[NEWLINE]) {
-		// TODO NOW NOW CHECk
-		if (lexer->get_column(lexer) == 0)
-			while (true)
-		{
-			if (lexer->eof(lexer)) return true;
-
-			if (lexer->lookahead != '\r') return true;
-			lexer->advance(lexer, true);
-
-			if (lexer->lookahead != '\n') return true;
-			lexer->advance(lexer, true);
-		}
-
 		if (lexer->eof(lexer)) {
 			lexer->result_symbol = NEWLINE;
 			lexer->mark_end(lexer);
-			printf("settling for NEWLINE (eof flavor)\n");
 			return true;
 		}
 
-		if (lexer->lookahead == '\r') lexer->advance(lexer, false);
-		if (lexer->lookahead == '\n') {
-			lexer->advance(lexer, false);
+		// TODO CONSIDER supporting legacy mac newline encoding
+		if (is_newline(lexer->lookahead)) {
+			if (lexer->lookahead == '\r') lexer->advance(lexer, false);
+			if (lexer->lookahead == '\n') lexer->advance(lexer, false);
 			lexer->result_symbol = NEWLINE;
 			lexer->mark_end(lexer);
-			printf("settling for NEWLINE\n");
+			printf("TODO POST NEWLINE: '%c'\n", lexer->lookahead);
 			return true;
 		}
 	}
 
 	// Handles H*_MARKER
-	if (lexer->lookahead == '#' && valid_symbols[H1_MARKER]) {
+	if (valid_symbols[H1_MARKER] && lexer->lookahead == '#') {
+		printf("HEADING AGAIN\n");
 		lexer->advance(lexer, false);
 		while (is_hspace(lexer->lookahead)) lexer->advance(lexer, false);
 
 		lexer->result_symbol = H1_MARKER;
 		lexer->mark_end(lexer);
-		printf("settling for H1_MARKER\n");
 		return true;
 	}
 
@@ -75,18 +62,13 @@ bool tree_sitter_norsu_external_scanner_scan(
 	// TODO CONSIDER !lexer->eof(lexer)
 	if (valid_symbols[TEXT] &&
 		!lexer->eof(lexer) &&
-		!is_newline(lexer->lookahead))
+		!is_newline(lexer->lookahead)) // TODO CONSIDER
 	{
-		while (valid_symbols[TEXT] &&
-			!lexer->eof(lexer) &&
-			!is_newline(lexer->lookahead))
-		{
+		while (!lexer->eof(lexer) && !is_newline(lexer->lookahead))
 			lexer->advance(lexer, false);
-		}
 
-		lexer->mark_end(lexer);
 		lexer->result_symbol = TEXT;
-		printf("settling for TEXT\n");
+		lexer->mark_end(lexer);
 		return true;
 	}
 
