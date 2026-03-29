@@ -65,10 +65,7 @@ bool tree_sitter_norsu_external_scanner_scan(
 		}
 	}
 
-	if (valid_symbols[TEXT] &&
-		!lexer->eof(lexer) &&
-		!is_newline(lexer->lookahead))
-	{
+	if (valid_symbols[TEXT] && !lexer->eof(lexer) && !is_newline(lexer->lookahead)) {
 		while (!lexer->eof(lexer) && !is_newline(lexer->lookahead))
 			lexer->advance(lexer, false);
 		lexer->result_symbol = TEXT;

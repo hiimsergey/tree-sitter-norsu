@@ -16,7 +16,7 @@ export default grammar({
 				$.section6))
 		),
 
-		_block: $ => choice($.paragraph, $._blank_line),
+		_block: $ => choice($._blank_line, $.paragraph),
 
 		section1: $ => prec.right(seq(
 			$.heading1,
@@ -57,8 +57,9 @@ export default grammar({
 
 		paragraph: $ => prec.right(repeat1(
 			seq($._text, $._newline)
-		)),
+		))
 	},
+
 	externals: $ => [
 		$._newline,
 		$._blank_line,
@@ -70,6 +71,7 @@ export default grammar({
 		$._h5_marker,
 		$._h6_marker
 	],
+
 	extras: $ => []
 });
 
@@ -86,3 +88,15 @@ export default grammar({
 // H7+ headings
 // single line of non-markup text
 // #hashtag should not be a heading
+//
+// line comments:
+// by itself
+// multiple consecutive
+// splitting one paragraph
+// splitting table
+//
+// block comments:
+// splitting heading
+// splitting table
+// splitting bullet list
+// "wrapping style" (%% foo\nbar %%)

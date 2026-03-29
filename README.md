@@ -6,20 +6,22 @@ v0.0.X:
 
 1. [X] paragraphs and H1 headings
 2. [X] H2-H6 headings
-4. [ ] line comments
-5. [ ] block comments
-6. [ ] block quotes
+3. [ ] basic links
+4. [ ] links with aliases
+5. [ ] inline bold
+6. [ ] other inline markup
 7. [ ] code blocks
-8. [ ] inline bold
-9. [ ] other inline markup
-10. [ ] tags
-11. [ ] basic links
-12. [ ] links with aliases
+8. [ ] tags
+9. [ ] block quotes
+10. [ ] callouts
+11. [ ] escaping
+12. [ ] comments
 13. [ ] non-nested bullet lists
 14. [ ] nested bullet lists
 15. [ ] alphabetic lists
-16. [ ] frontmatter
-17. [ ] tables
+16. [ ] checklists
+17. [ ] frontmatter
+18. [ ] tables
 
 ### NOTE
 - tables requires at least two lines (header + content)
