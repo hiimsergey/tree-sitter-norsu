@@ -48,28 +48,33 @@ export default grammar({
 			repeat($._block)
 		)),
 
-		heading1: $ => prec(1, seq($._h1_marker, optional($._text), $._newline)),
-		heading2: $ => prec(1, seq($._h2_marker, optional($._text), $._newline)),
-		heading3: $ => prec(1, seq($._h3_marker, optional($._text), $._newline)),
-		heading4: $ => prec(1, seq($._h4_marker, optional($._text), $._newline)),
-		heading5: $ => prec(1, seq($._h5_marker, optional($._text), $._newline)),
-		heading6: $ => prec(1, seq($._h6_marker, optional($._text), $._newline)),
+		// TODO add inline markup to headings
+		heading1: $ => prec(1, seq($._h1_open, optional($._text), $._newline)),
+		heading2: $ => prec(1, seq($._h2_open, optional($._text), $._newline)),
+		heading3: $ => prec(1, seq($._h3_open, optional($._text), $._newline)),
+		heading4: $ => prec(1, seq($._h4_open, optional($._text), $._newline)),
+		heading5: $ => prec(1, seq($._h5_open, optional($._text), $._newline)),
+		heading6: $ => prec(1, seq($._h6_open, optional($._text), $._newline)),
 
-		paragraph: $ => prec.right(repeat1(
-			seq($._text, $._newline)
-		))
+		paragraph: $ => prec.right(repeat1($._line)),
+		_line: $ => seq(repeat1($._inline), $._newline),
+		_inline: $ => choice($._text, $.link),
+
+		link: $ => seq($._link_open, repeat($._inline), $._link_close)
 	},
 
 	externals: $ => [
 		$._newline,
 		$._blank_line,
 		$._text,
-		$._h1_marker,
-		$._h2_marker,
-		$._h3_marker,
-		$._h4_marker,
-		$._h5_marker,
-		$._h6_marker
+		$._h1_open,
+		$._h2_open,
+		$._h3_open,
+		$._h4_open,
+		$._h5_open,
+		$._h6_open,
+		$._link_open,
+		$._link_close
 	],
 
 	extras: $ => []
@@ -100,3 +105,15 @@ export default grammar({
 // splitting table
 // splitting bullet list
 // "wrapping style" (%% foo\nbar %%)
+//
+// links:
+// [[foo]]
+// foo [[bar]] baz
+// foo [[bar]]
+// [[foo\nbar]] // TODO NOW NOW DEBUG
+// foo [[bar
+// foo]] bar
+// [foo] bar
+// ]foo
+// ]]foo
+// [[foo [[bar]] baz]]

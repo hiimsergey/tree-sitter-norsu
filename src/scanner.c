@@ -4,12 +4,14 @@ typedef enum {
 	NEWLINE,
 	BLANK_LINE,
 	TEXT,
-	H1_MARKER,
-	H2_MARKER,
-	H3_MARKER,
-	H4_MARKER,
-	H5_MARKER,
-	H6_MARKER
+	H1_OPEN,
+	H2_OPEN,
+	H3_OPEN,
+	H4_OPEN,
+	H5_OPEN,
+	H6_OPEN,
+	LINK_OPEN,
+	LINK_CLOSE
 } TokenType;
 
 static inline bool is_hspace(int32_t c) { return c == ' ' || c == '\t'; }
@@ -21,14 +23,14 @@ bool tree_sitter_norsu_external_scanner_scan(
 	const bool *valid_symbols
 ) {
 	if (valid_symbols[BLANK_LINE]) {
-		bool empty = true;
+		bool advanced = false;
 		while (is_newline(lexer->lookahead)) {
 			if (lexer->lookahead == '\r') lexer->advance(lexer, false);
 			if (lexer->lookahead == '\n') lexer->advance(lexer, false);
 			while (is_hspace(lexer->lookahead)) lexer->advance(lexer, false);
-			empty = false;
+			advanced = true;
 		}
-		if (!empty) {
+		if (advanced) {
 			lexer->result_symbol = BLANK_LINE;
 			lexer->mark_end(lexer);
 			return true;
@@ -50,7 +52,7 @@ bool tree_sitter_norsu_external_scanner_scan(
 		}
 	}
 
-	if (valid_symbols[H1_MARKER]) {
+	if (valid_symbols[H1_OPEN]) {
 		int count = 0;
 		while (lexer->lookahead == '#' && count <= 6) {
 			lexer->advance(lexer, false);
@@ -59,15 +61,36 @@ bool tree_sitter_norsu_external_scanner_scan(
 		if (count >= 1 && count <= 6 && is_hspace(lexer->lookahead)) {
 			while (is_hspace(lexer->lookahead)) lexer->advance(lexer, false);
 
-			lexer->result_symbol = H1_MARKER + count - 1;
+			lexer->result_symbol = H1_OPEN + count - 1;
+			lexer->mark_end(lexer);
+			return true;
+		}
+	}
+
+	if (valid_symbols[LINK_OPEN] && lexer->lookahead == '[') {
+		lexer->advance(lexer, false);
+		if (lexer->lookahead == '[') {
+			lexer->advance(lexer, false);
+			lexer->result_symbol = LINK_OPEN;
+			lexer->mark_end(lexer);
+			return true;
+		}
+	}
+	if (valid_symbols[LINK_CLOSE] && lexer->lookahead == ']') {
+		lexer->advance(lexer, false);
+		if (lexer->lookahead == ']') {
+			lexer->advance(lexer, false);
+			lexer->result_symbol = LINK_CLOSE;
 			lexer->mark_end(lexer);
 			return true;
 		}
 	}
 
 	if (valid_symbols[TEXT] && !lexer->eof(lexer) && !is_newline(lexer->lookahead)) {
-		while (!lexer->eof(lexer) && !is_newline(lexer->lookahead))
-			lexer->advance(lexer, false);
+		while (!lexer->eof(lexer) &&
+			!is_newline(lexer->lookahead) &&
+			lexer->lookahead != '[' &&
+			lexer->lookahead != ']') lexer->advance(lexer, false);
 		lexer->result_symbol = TEXT;
 		lexer->mark_end(lexer);
 		return true;
