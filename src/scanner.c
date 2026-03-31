@@ -1,4 +1,5 @@
 #include "tree_sitter/parser.h"
+#include <stdio.h> // TODO FINAL REMOVE + REMOVE all printf calls
 
 typedef enum {
 	NEWLINE,
@@ -33,6 +34,7 @@ bool tree_sitter_norsu_external_scanner_scan(
 		if (advanced) {
 			lexer->result_symbol = BLANK_LINE;
 			lexer->mark_end(lexer);
+			printf("BLANK_LINE (%c)\n", lexer->lookahead);
 			return true;
 		}
 	}
@@ -41,6 +43,7 @@ bool tree_sitter_norsu_external_scanner_scan(
 		if (lexer->eof(lexer)) {
 			lexer->result_symbol = NEWLINE;
 			lexer->mark_end(lexer);
+			printf("NEWLINE (%c)\n", lexer->lookahead);
 			return true;
 		}
 		if (is_newline(lexer->lookahead)) {
@@ -48,6 +51,7 @@ bool tree_sitter_norsu_external_scanner_scan(
 			if (lexer->lookahead == '\n') lexer->advance(lexer, false);
 			lexer->result_symbol = NEWLINE;
 			lexer->mark_end(lexer);
+			printf("NEWLINE (%c)\n", lexer->lookahead);
 			return true;
 		}
 	}
@@ -63,6 +67,7 @@ bool tree_sitter_norsu_external_scanner_scan(
 
 			lexer->result_symbol = H1_OPEN + count - 1;
 			lexer->mark_end(lexer);
+			printf("H*_OPEN (%c)\n", lexer->lookahead);
 			return true;
 		}
 	}
@@ -73,6 +78,7 @@ bool tree_sitter_norsu_external_scanner_scan(
 			lexer->advance(lexer, false);
 			lexer->result_symbol = LINK_OPEN;
 			lexer->mark_end(lexer);
+			printf("LINK_OPEN (%c)\n", lexer->lookahead);
 			return true;
 		}
 	}
@@ -82,17 +88,20 @@ bool tree_sitter_norsu_external_scanner_scan(
 			lexer->advance(lexer, false);
 			lexer->result_symbol = LINK_CLOSE;
 			lexer->mark_end(lexer);
+			printf("LINK_CLOSE (%c)\n", lexer->lookahead);
 			return true;
 		}
 	}
 
 	if (valid_symbols[TEXT] && !lexer->eof(lexer) && !is_newline(lexer->lookahead)) {
-		while (!lexer->eof(lexer) &&
-			!is_newline(lexer->lookahead) &&
-			lexer->lookahead != '[' &&
-			lexer->lookahead != ']') lexer->advance(lexer, false);
+		while (!lexer->eof(lexer) && !is_newline(lexer->lookahead)) {
+			lexer->advance(lexer, false);
+			// TODO NOW NOW do i have to encode text as "... or unterminated link or unterminated bold or ..."?
+			if (lexer->lookahead == '[' || lexer->lookahead == ']') break;
+		}
 		lexer->result_symbol = TEXT;
 		lexer->mark_end(lexer);
+		printf("TEXT (%c)\n", lexer->lookahead);
 		return true;
 	}
 

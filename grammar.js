@@ -117,3 +117,24 @@ export default grammar({
 // ]foo
 // ]]foo
 // [[foo [[bar]] baz]]
+//
+// markup edge cases:
+// ## heading\n\n\n##heading
+// empty headings
+// [[foo\nbar]]
+// [[foo|]]
+// [[foo#]]
+// [[file://]]
+// foo* bar*
+// *foo *bar
+// ```c\n``
+// #/
+// >
+// >>
+// <whatever callouts are supposed to look like>
+// %% % foo
+// -
+// - [ ]
+// %%%\n%%
+// %%%\n%%%
+// |||\n|||
