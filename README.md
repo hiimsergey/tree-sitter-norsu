@@ -6,7 +6,7 @@ v0.0.X:
 
 - [X] 1: paragraphs and H1 headings
 - [X] 2: H2-H6 headings
-- [ ] 3: basic links
+- [X] 3: basic links
 - [ ] 4: links with aliases
 - [ ] 5: inline bold
 - [ ] 6: other inline markup

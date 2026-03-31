@@ -24,7 +24,6 @@ bool tree_sitter_norsu_external_scanner_scan(
 	const bool *valid_symbols
 ) {
 	if (valid_symbols[NEWLINE]) {
-		printf("newline valid\n");
 		if (lexer->eof(lexer)) {
 			lexer->result_symbol = NEWLINE;
 			lexer->mark_end(lexer);
@@ -32,7 +31,6 @@ bool tree_sitter_norsu_external_scanner_scan(
 			return true;
 		}
 		if (is_newline(lexer->lookahead)) {
-			printf("is_newline\n");
 			if (lexer->lookahead == '\r') lexer->advance(lexer, false);
 			if (lexer->lookahead == '\n') lexer->advance(lexer, false);
 			lexer->result_symbol = NEWLINE;
@@ -41,7 +39,6 @@ bool tree_sitter_norsu_external_scanner_scan(
 			return true;
 		}
 	}
-	else if (lexer->eof(lexer)) return false;
 
 	if (valid_symbols[BLANK_LINE]) {
 		bool advanced = false;
@@ -89,6 +86,10 @@ bool tree_sitter_norsu_external_scanner_scan(
 			printf("LINK_OPEN (%c)\n", lexer->lookahead);
 			return true;
 		}
+		lexer->result_symbol = TEXT;
+		lexer->mark_end(lexer);
+		printf("TEXT (%c)\n", lexer->lookahead);
+		return true;
 	}
 	if (valid_symbols[LINK_CLOSE] && lexer->lookahead == ']') {
 		lexer->advance(lexer, false);
@@ -102,17 +103,24 @@ bool tree_sitter_norsu_external_scanner_scan(
 			printf("LINK_CLOSE (%c)\n", lexer->lookahead);
 			return true;
 		}
+		lexer->result_symbol = TEXT;
+		lexer->mark_end(lexer);
+		printf("TEXT (%c)\n", lexer->lookahead);
+		return true;
 	}
 
-	while (!lexer->eof(lexer) && !is_newline(lexer->lookahead)) {
-		printf("lookahead (%c)\n", lexer->lookahead);
-		lexer->advance(lexer, false);
-		if (lexer->lookahead == '[' || lexer->lookahead == ']') break;
+	if (!lexer->eof(lexer) && !is_newline(lexer->lookahead)) {
+		while (!lexer->eof(lexer) && !is_newline(lexer->lookahead)) {
+			lexer->advance(lexer, false);
+			if (lexer->lookahead == '[' || lexer->lookahead == ']') break;
+		}
+		lexer->result_symbol = TEXT;
+		lexer->mark_end(lexer);
+		printf("TEXT (%c)\n", lexer->lookahead);
+		return true;
 	}
-	lexer->result_symbol = TEXT;
-	lexer->mark_end(lexer);
-	printf("TEXT (%c)\n", lexer->lookahead);
-	return true;
+
+	return false;
 }
 
 void *tree_sitter_norsu_external_scanner_create() { return NULL; }
