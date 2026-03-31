@@ -72,17 +72,7 @@
   {
     "type": "link",
     "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": false,
-      "types": [
-        {
-          "type": "link",
-          "named": true
-        }
-      ]
-    }
+    "fields": {}
   },
   {
     "type": "paragraph",

@@ -58,9 +58,13 @@ export default grammar({
 
 		paragraph: $ => prec.right(repeat1($._line)),
 		_line: $ => seq(repeat1($._inline), $._newline),
-		_inline: $ => choice($._text, $.link),
+		_inline: $ => choice(
+			$._text,
+			$.link,
+			$._link_open, $._link_close
+		),
 
-		link: $ => seq($._link_open, repeat($._inline), $._link_close)
+		link: $ => seq($._link_open, repeat($._text), $._link_close)
 	},
 
 	externals: $ => [
@@ -77,64 +81,50 @@ export default grammar({
 		$._link_close
 	],
 
-	extras: $ => []
+	extras: $ => [],
+
+	// TODO FINAL CONSIDER REPLACE by a more elegant solution, if is not
+	conflicts: $ => [[$.link, $._inline]]
 });
 
-// TODO PLAN TEST
-// two consecutive headings
-// empty headings
-// heading, _blank line, paragraph
-// multiline paragraph
-//
-// multiline paragraph
-// `_block`s before section 1
-// no sections
-// multiple empty headings
-// H7+ headings
-// single line of non-markup text
-// #hashtag should not be a heading
-//
-// line comments:
-// by itself
-// multiple consecutive
-// splitting one paragraph
-// splitting table
-//
-// block comments:
-// splitting heading
-// splitting table
-// splitting bullet list
-// "wrapping style" (%% foo\nbar %%)
-//
-// links:
-// [[foo]]
-// foo [[bar]] baz
-// foo [[bar]]
-// [[foo\nbar]] // TODO NOW NOW DEBUG
-// foo [[bar
-// foo]] bar
-// [foo] bar
-// ]foo
-// ]]foo
-// [[foo [[bar]] baz]]
-//
-// markup edge cases:
-// ## heading\n\n\n##heading
-// empty headings
-// [[foo\nbar]]
-// [[foo|]]
-// [[foo#]]
-// [[file://]]
-// foo* bar*
-// *foo *bar
-// ```c\n``
-// #/
-// >
-// >>
-// <whatever callouts are supposed to look like>
-// %% % foo
-// -
-// - [ ]
-// %%%\n%%
-// %%%\n%%%
-// |||\n|||
+/* NOTE test cases (seemingly) not expressable with corpus:
+# foo
+*/
+
+/* TODO TEST
+line comments:
+	by itself
+	multiple consecutive
+	splitting one paragraph
+	splitting table
+
+block comments:
+	splitting heading
+	splitting table
+	splitting bullet list
+	"wrapping style" (%% foo\nbar %%)
+
+markup:
+	[[foo *bar* baz]]
+
+markup edge cases:
+	## heading\n\n\n##heading
+	empty headings
+	[[foo\nbar]]
+	[[foo|]]
+	[[foo#]]
+	[[file://]]
+	foo* bar*
+	*foo *bar
+	```c\n``
+	#/
+	>
+	>>
+	<whatever callouts are supposed to look like>
+	%% % foo
+	-
+	- [ ]
+	%%%\n%%
+	%%%\n%%%
+	|||\n|||
+*/
