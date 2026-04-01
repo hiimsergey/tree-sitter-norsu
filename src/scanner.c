@@ -1,5 +1,5 @@
+#include <stdio.h>
 #include "tree_sitter/parser.h"
-#include <stdio.h> // TODO FINAL REMOVE + REMOVE all printf calls
 
 typedef enum {
 	NEWLINE,
@@ -15,8 +15,55 @@ typedef enum {
 	LINK_CLOSE
 } TokenType;
 
-static inline bool is_hspace(int32_t c) { return c == ' ' || c == '\t'; }
-static inline bool is_newline(int32_t c) { return c == '\n' || c == '\r'; }
+static inline bool isoneof(int32_t c, const char *haystack) {
+	while (*haystack) if (*(haystack++) == c) return true;
+	return false;
+}
+
+static inline bool done(TSLexer *lexer, TokenType symbol) {
+	lexer->result_symbol = symbol;
+	lexer->mark_end(lexer);
+#if 1
+	switch (symbol) {
+		case NEWLINE:
+			printf("NEWLINE (%c)\n", lexer->lookahead);
+			break;
+		case BLANK_LINE:
+			printf("BLANK_LINE (%c)\n", lexer->lookahead);
+			break;
+		case TEXT:
+			printf("TEXT (%c)\n", lexer->lookahead);
+			break;
+		case H1_OPEN:
+			printf("H1_OPEN (%c)\n", lexer->lookahead);
+			break;
+		case H2_OPEN:
+			printf("H2_OPEN (%c)\n", lexer->lookahead);
+			break;
+		case H3_OPEN:
+			printf("H3_OPEN (%c)\n", lexer->lookahead);
+			break;
+		case H4_OPEN:
+			printf("H4_OPEN (%c)\n", lexer->lookahead);
+			break;
+		case H5_OPEN:
+			printf("H5_OPEN (%c)\n", lexer->lookahead);
+			break;
+		case H6_OPEN:
+			printf("H6_OPEN (%c)\n", lexer->lookahead);
+			break;
+		case LINK_OPEN:
+			printf("LINK_OPEN (%c)\n", lexer->lookahead);
+			break;
+		case LINK_CLOSE:
+			printf("LINK_CLOSE (%c)\n", lexer->lookahead);
+			break;
+		default:
+			break;
+	}
+#endif
+	return true;
+}
 
 bool tree_sitter_norsu_external_scanner_scan(
 	void *payload,
@@ -24,36 +71,23 @@ bool tree_sitter_norsu_external_scanner_scan(
 	const bool *valid_symbols
 ) {
 	if (valid_symbols[NEWLINE]) {
-		if (lexer->eof(lexer)) {
-			lexer->result_symbol = NEWLINE;
-			lexer->mark_end(lexer);
-			printf("NEWLINE (%c)\n", lexer->lookahead);
-			return true;
-		}
-		if (is_newline(lexer->lookahead)) {
+		if (lexer->eof(lexer)) return done(lexer, NEWLINE);
+		if (isoneof(lexer->lookahead, "\n\r")) {
 			if (lexer->lookahead == '\r') lexer->advance(lexer, false);
 			if (lexer->lookahead == '\n') lexer->advance(lexer, false);
-			lexer->result_symbol = NEWLINE;
-			lexer->mark_end(lexer);
-			printf("NEWLINE (%c)\n", lexer->lookahead);
-			return true;
+			return done(lexer, NEWLINE);
 		}
 	}
 
 	if (valid_symbols[BLANK_LINE]) {
 		bool advanced = false;
-		while (is_newline(lexer->lookahead)) {
+		while (isoneof(lexer->lookahead, "\n\r")) {
 			if (lexer->lookahead == '\r') lexer->advance(lexer, false);
 			if (lexer->lookahead == '\n') lexer->advance(lexer, false);
-			while (is_hspace(lexer->lookahead)) lexer->advance(lexer, false);
+			while (isoneof(lexer->lookahead, " \t")) lexer->advance(lexer, false);
 			advanced = true;
 		}
-		if (advanced) {
-			lexer->result_symbol = BLANK_LINE;
-			lexer->mark_end(lexer);
-			printf("BLANK_LINE (%c)\n", lexer->lookahead);
-			return true;
-		}
+		if (advanced) return done(lexer, BLANK_LINE);
 	}
 
 	if (valid_symbols[H1_OPEN]) {
@@ -63,16 +97,10 @@ bool tree_sitter_norsu_external_scanner_scan(
 			++count;
 		}
 		if (count >= 1 && count <= 6 &&
-			(is_hspace(lexer->lookahead) ||
-				is_newline(lexer->lookahead) ||
-				lexer->eof(lexer)))
+			(isoneof(lexer->lookahead, " \t\n\r") || lexer->eof(lexer)))
 		{
-			while (is_hspace(lexer->lookahead)) lexer->advance(lexer, false);
-
-			lexer->result_symbol = H1_OPEN + count - 1;
-			lexer->mark_end(lexer);
-			printf("H*_OPEN (%c)\n", lexer->lookahead);
-			return true;
+			while (isoneof(lexer->lookahead, " \t")) lexer->advance(lexer, false);
+			return done(lexer, H1_OPEN + count - 1);
 		}
 	}
 
@@ -81,43 +109,26 @@ bool tree_sitter_norsu_external_scanner_scan(
 
 		if (lexer->lookahead == '[') {
 			lexer->advance(lexer, false);
-			lexer->result_symbol = LINK_OPEN;
-			lexer->mark_end(lexer);
-			printf("LINK_OPEN (%c)\n", lexer->lookahead);
-			return true;
+			return done(lexer, LINK_OPEN);
 		}
-		lexer->result_symbol = TEXT;
-		lexer->mark_end(lexer);
-		printf("TEXT (%c)\n", lexer->lookahead);
-		return true;
+		return done(lexer, TEXT);
 	}
 	if (valid_symbols[LINK_CLOSE] && lexer->lookahead == ']') {
 		lexer->advance(lexer, false);
 
 		if (lexer->lookahead == ']') {
 			lexer->advance(lexer, false);
-			lexer->result_symbol = LINK_CLOSE;
-			lexer->mark_end(lexer);
-			// TODO NOW DEBUG why does [[foo]] produce two LINK_CLOSE tokens
-			// ^ and most importantly, why does it still work?
-			printf("LINK_CLOSE (%c)\n", lexer->lookahead);
-			return true;
+			return done(lexer, LINK_CLOSE);
 		}
-		lexer->result_symbol = TEXT;
-		lexer->mark_end(lexer);
-		printf("TEXT (%c)\n", lexer->lookahead);
-		return true;
+		return done(lexer, TEXT);
 	}
 
-	if (!lexer->eof(lexer) && !is_newline(lexer->lookahead)) {
-		while (!lexer->eof(lexer) && !is_newline(lexer->lookahead)) {
+	if (!lexer->eof(lexer) && !isoneof(lexer->lookahead, "\n\r")) {
+		while (!lexer->eof(lexer) && !isoneof(lexer->lookahead, "\n\r")) {
 			lexer->advance(lexer, false);
-			if (lexer->lookahead == '[' || lexer->lookahead == ']') break;
+			if (isoneof(lexer->lookahead, "[]")) break;
 		}
-		lexer->result_symbol = TEXT;
-		lexer->mark_end(lexer);
-		printf("TEXT (%c)\n", lexer->lookahead);
-		return true;
+		return done(lexer, TEXT);
 	}
 
 	return false;
