@@ -9,18 +9,19 @@ v0.0.X:
 - [X] 3: links
 - [ ] 4: inline bold
 - [ ] 5: other inline markup
-- [ ] 6: code blocks
-- [ ] 7: tags
-- [ ] 8: block quotes
-- [ ] 9: callouts
-- [ ] 10: escaping
-- [ ] 11: comments
-- [ ] 12: non-nested bullet lists
-- [ ] 13: nested bullet lists
-- [ ] 14: alphabetic lists
-- [ ] 15: checklists
-- [ ] 16: frontmatter
-- [ ] 17: tables
+- [ ] 6: separators
+- [ ] 7: code blocks
+- [ ] 8: tags
+- [ ] 9: block quotes
+- [ ] 10: callouts
+- [ ] 11: escaping
+- [ ] 12: comments
+- [ ] 13: non-nested bullet lists
+- [ ] 14: nested bullet lists
+- [ ] 15: alphabetic lists
+- [ ] 16: checklists
+- [ ] 17: frontmatter
+- [ ] 18: tables
 
 ### NOTE
 - tables requires at least two lines (header + content)
