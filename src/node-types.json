@@ -40,37 +40,124 @@
     }
   },
   {
-    "type": "heading1",
+    "type": "h1",
     "named": true,
-    "fields": {}
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "h1_open",
+          "named": true
+        }
+      ]
+    }
   },
   {
-    "type": "heading2",
+    "type": "h2",
     "named": true,
-    "fields": {}
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "h2_open",
+          "named": true
+        }
+      ]
+    }
   },
   {
-    "type": "heading3",
+    "type": "h3",
     "named": true,
-    "fields": {}
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "h3_open",
+          "named": true
+        }
+      ]
+    }
   },
   {
-    "type": "heading4",
+    "type": "h4",
     "named": true,
-    "fields": {}
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "h4_open",
+          "named": true
+        }
+      ]
+    }
   },
   {
-    "type": "heading5",
+    "type": "h5",
     "named": true,
-    "fields": {}
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "h5_open",
+          "named": true
+        }
+      ]
+    }
   },
   {
-    "type": "heading6",
+    "type": "h6",
     "named": true,
-    "fields": {}
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "h6_open",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "link",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "link_address",
+          "named": true
+        },
+        {
+          "type": "link_alias_separator",
+          "named": true
+        },
+        {
+          "type": "link_close",
+          "named": true
+        },
+        {
+          "type": "link_open",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "link_address",
     "named": true,
     "fields": {}
   },
@@ -85,6 +172,14 @@
         {
           "type": "link",
           "named": true
+        },
+        {
+          "type": "link_close",
+          "named": true
+        },
+        {
+          "type": "link_open",
+          "named": true
         }
       ]
     }
@@ -98,7 +193,7 @@
       "required": true,
       "types": [
         {
-          "type": "heading1",
+          "type": "h1",
           "named": true
         },
         {
@@ -137,7 +232,7 @@
       "required": true,
       "types": [
         {
-          "type": "heading2",
+          "type": "h2",
           "named": true
         },
         {
@@ -172,7 +267,7 @@
       "required": true,
       "types": [
         {
-          "type": "heading3",
+          "type": "h3",
           "named": true
         },
         {
@@ -203,7 +298,7 @@
       "required": true,
       "types": [
         {
-          "type": "heading4",
+          "type": "h4",
           "named": true
         },
         {
@@ -230,7 +325,7 @@
       "required": true,
       "types": [
         {
-          "type": "heading5",
+          "type": "h5",
           "named": true
         },
         {
@@ -253,7 +348,7 @@
       "required": true,
       "types": [
         {
-          "type": "heading6",
+          "type": "h6",
           "named": true
         },
         {
@@ -262,5 +357,41 @@
         }
       ]
     }
+  },
+  {
+    "type": "h1_open",
+    "named": true
+  },
+  {
+    "type": "h2_open",
+    "named": true
+  },
+  {
+    "type": "h3_open",
+    "named": true
+  },
+  {
+    "type": "h4_open",
+    "named": true
+  },
+  {
+    "type": "h5_open",
+    "named": true
+  },
+  {
+    "type": "h6_open",
+    "named": true
+  },
+  {
+    "type": "link_alias_separator",
+    "named": true
+  },
+  {
+    "type": "link_close",
+    "named": true
+  },
+  {
+    "type": "link_open",
+    "named": true
   }
 ]

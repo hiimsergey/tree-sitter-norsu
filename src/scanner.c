@@ -1,4 +1,8 @@
-#include <stdio.h>
+//#define DEBUG
+
+#ifdef DEBUG
+#	include <stdio.h>
+#endif
 #include "tree_sitter/parser.h"
 
 typedef enum {
@@ -12,7 +16,8 @@ typedef enum {
 	H5_OPEN,
 	H6_OPEN,
 	LINK_OPEN,
-	LINK_CLOSE
+	LINK_CLOSE,
+	LINK_ALIAS_SEPARATOR
 } TokenType;
 
 static inline bool isoneof(int32_t c, const char *haystack) {
@@ -23,45 +28,12 @@ static inline bool isoneof(int32_t c, const char *haystack) {
 static inline bool done(TSLexer *lexer, TokenType symbol) {
 	lexer->result_symbol = symbol;
 	lexer->mark_end(lexer);
-#if 1
-	switch (symbol) {
-		case NEWLINE:
-			printf("NEWLINE (%c)\n", lexer->lookahead);
-			break;
-		case BLANK_LINE:
-			printf("BLANK_LINE (%c)\n", lexer->lookahead);
-			break;
-		case TEXT:
-			printf("TEXT (%c)\n", lexer->lookahead);
-			break;
-		case H1_OPEN:
-			printf("H1_OPEN (%c)\n", lexer->lookahead);
-			break;
-		case H2_OPEN:
-			printf("H2_OPEN (%c)\n", lexer->lookahead);
-			break;
-		case H3_OPEN:
-			printf("H3_OPEN (%c)\n", lexer->lookahead);
-			break;
-		case H4_OPEN:
-			printf("H4_OPEN (%c)\n", lexer->lookahead);
-			break;
-		case H5_OPEN:
-			printf("H5_OPEN (%c)\n", lexer->lookahead);
-			break;
-		case H6_OPEN:
-			printf("H6_OPEN (%c)\n", lexer->lookahead);
-			break;
-		case LINK_OPEN:
-			printf("LINK_OPEN (%c)\n", lexer->lookahead);
-			break;
-		case LINK_CLOSE:
-			printf("LINK_CLOSE (%c)\n", lexer->lookahead);
-			break;
-		default:
-			break;
-	}
+
+#ifdef DEBUG
+#	define PRINT(token) printf(#token " (%c)\n", lexer->lookahead)
+	PRINT(symbol);
 #endif
+
 	return true;
 }
 
@@ -113,6 +85,7 @@ bool tree_sitter_norsu_external_scanner_scan(
 		}
 		return done(lexer, TEXT);
 	}
+
 	if (valid_symbols[LINK_CLOSE] && lexer->lookahead == ']') {
 		lexer->advance(lexer, false);
 
@@ -123,10 +96,15 @@ bool tree_sitter_norsu_external_scanner_scan(
 		return done(lexer, TEXT);
 	}
 
+	if (valid_symbols[LINK_ALIAS_SEPARATOR] && lexer->lookahead == '|') {
+		lexer->advance(lexer, false);
+		return done(lexer, LINK_ALIAS_SEPARATOR);
+	}
+
 	if (!lexer->eof(lexer) && !isoneof(lexer->lookahead, "\n\r")) {
 		while (!lexer->eof(lexer) && !isoneof(lexer->lookahead, "\n\r")) {
 			lexer->advance(lexer, false);
-			if (isoneof(lexer->lookahead, "[]")) break;
+			if (isoneof(lexer->lookahead, "[]|")) break;
 		}
 		return done(lexer, TEXT);
 	}

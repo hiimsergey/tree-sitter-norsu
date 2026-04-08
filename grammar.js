@@ -19,71 +19,79 @@ export default grammar({
 		_block: $ => choice($._blank_line, $.paragraph),
 
 		section1: $ => prec.right(seq(
-			$.heading1,
+			$.h1,
 			repeat($._block),
 			repeat(choice($.section2, $.section3, $.section4, $.section5, $.section6))
 		)),
 		section2: $ => prec.right(seq(
-			$.heading2,
+			$.h2,
 			repeat($._block),
 			repeat(choice($.section3, $.section4, $.section5, $.section6))
 		)),
 		section3: $ => prec.right(seq(
-			$.heading3,
+			$.h3,
 			repeat($._block),
 			repeat(choice($.section4, $.section5, $.section6))
 		)),
 		section4: $ => prec.right(seq(
-			$.heading4,
+			$.h4,
 			repeat($._block),
 			repeat(choice($.section5, $.section6))
 		)),
 		section5: $ => prec.right(seq(
-			$.heading5,
+			$.h5,
 			repeat($._block),
 			repeat($.section6)
 		)),
 		section6: $ => prec.right(seq(
-			$.heading6,
+			$.h6,
 			repeat($._block)
 		)),
 
 		// TODO add inline markup to headings
-		heading1: $ => prec(1, seq($._h1_open, optional($._text), $._newline)),
-		heading2: $ => prec(1, seq($._h2_open, optional($._text), $._newline)),
-		heading3: $ => prec(1, seq($._h3_open, optional($._text), $._newline)),
-		heading4: $ => prec(1, seq($._h4_open, optional($._text), $._newline)),
-		heading5: $ => prec(1, seq($._h5_open, optional($._text), $._newline)),
-		heading6: $ => prec(1, seq($._h6_open, optional($._text), $._newline)),
+		h1: $ => prec(1, seq($.h1_open, optional($._text), $._newline)),
+		h2: $ => prec(1, seq($.h2_open, optional($._text), $._newline)),
+		h3: $ => prec(1, seq($.h3_open, optional($._text), $._newline)),
+		h4: $ => prec(1, seq($.h4_open, optional($._text), $._newline)),
+		h5: $ => prec(1, seq($.h5_open, optional($._text), $._newline)),
+		h6: $ => prec(1, seq($.h6_open, optional($._text), $._newline)),
 
 		paragraph: $ => prec.right(repeat1($._line)),
 		_line: $ => seq(repeat1($._inline), $._newline),
 		_inline: $ => choice(
 			$._text,
 			$.link,
-			$._link_open, $._link_close
+			$.link_open, $.link_close
 		),
 
-		link: $ => seq($._link_open, repeat($._text), $._link_close)
+		link: $ => seq(
+			$.link_open,
+			optional($.link_address),
+			// TODO TEST extensively
+			optional(seq($.link_alias_separator, repeat($._text))),
+			$.link_close
+		),
+		link_address: $ => repeat1($._text)
 	},
 
 	externals: $ => [
 		$._newline,
 		$._blank_line,
 		$._text,
-		$._h1_open,
-		$._h2_open,
-		$._h3_open,
-		$._h4_open,
-		$._h5_open,
-		$._h6_open,
-		$._link_open,
-		$._link_close
+		$.h1_open,
+		$.h2_open,
+		$.h3_open,
+		$.h4_open,
+		$.h5_open,
+		$.h6_open,
+		$.link_open,
+		$.link_close,
+		$.link_alias_separator
 	],
 
 	extras: $ => [],
 
-	// TODO FINAL CONSIDER REPLACE by a more elegant solution, if is not
+	// TODO FINAL CONSIDER REPLACE by a more elegant solution, if it is not
 	conflicts: $ => [[$.link, $._inline]]
 });
 
