@@ -55,7 +55,7 @@ export default grammar({
 		h4: $ => prec(1, seq($.h4_open, optional($.h_text), $._newline)),
 		h5: $ => prec(1, seq($.h5_open, optional($.h_text), $._newline)),
 		h6: $ => prec(1, seq($.h6_open, optional($.h_text), $._newline)),
-		h_text: $ => repeat1($._text)
+		h_text: $ => repeat1($._text),
 
 		paragraph: $ => prec.right(repeat1($._line)),
 		_line: $ => seq(repeat1($._inline), $._newline),
@@ -95,6 +95,8 @@ export default grammar({
 	// TODO FINAL CONSIDER REPLACE by a more elegant solution, if it is not
 	conflicts: $ => [[$.link, $._inline]]
 });
+
+// TODO NOW DEBUG dont conceal link tokens if link is not intact
 
 /* NOTE test cases (seemingly) not expressable with corpus:
 # foo
