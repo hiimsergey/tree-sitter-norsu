@@ -2,10 +2,9 @@
  * @file A modern markup language designed for personal knowledge management
  * @author Sergey Lavrent <sergeylavrent|at|protonmail|dot|com>
  * @license GPL-3.0
+ *
+ * @typedef {import("tree-sitter-cli/dsl")}
  */
-
-/// <reference types="tree-sitter-cli/dsl" />
-// @ts-check
 
 export default grammar({
 	name: "norsu",
@@ -67,7 +66,7 @@ export default grammar({
 
 		link: $ => seq(
 			$.link_open,
-			optional($.link_address),
+			$.link_address,
 			// TODO TEST extensively
 			optional(seq($.link_alias_separator, repeat($._text))),
 			$.link_close
@@ -96,6 +95,7 @@ export default grammar({
 	conflicts: $ => [[$.link, $._inline]]
 });
 
+// TODO NOW DEBUG [[]] takes you to ]].no
 // TODO NOW DEBUG dont conceal link tokens if link is not intact
 
 /* NOTE test cases (seemingly) not expressable with corpus:
@@ -103,6 +103,9 @@ export default grammar({
 */
 
 /* TODO TEST
+headings:
+	trailing spaces in headings (should not be part of the name)
+
 line comments:
 	by itself
 	multiple consecutive
