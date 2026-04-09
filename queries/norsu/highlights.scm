@@ -17,12 +17,15 @@
  (h4_open)
  (h4_open)
  (h5_open)
- (link_open)
- (link_close)
  (link_alias_separator)
   ] @conceal (#set! conceal ""))
 
+; Conceal link openers and closers, if they are part of an intact link
+(link
+   ((link_open) @conceal (#set! conceal ""))
+   ((link_close) @conceal (#set! conceal "")))
+
 ; Conceal link address, if there is an alias
-((link
+(link
    ((link_address) @conceal (#set! conceal ""))
-   (link_alias_separator)))
+   (link_alias_separator))

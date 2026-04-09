@@ -95,9 +95,6 @@ export default grammar({
 	conflicts: $ => [[$.link, $._inline]]
 });
 
-// TODO NOW DEBUG [[]] takes you to ]].no
-// TODO NOW DEBUG dont conceal link tokens if link is not intact
-
 /* NOTE test cases (seemingly) not expressable with corpus:
 # foo
 */

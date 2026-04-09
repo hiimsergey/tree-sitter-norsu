@@ -511,16 +511,8 @@
           "name": "link_open"
         },
         {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "link_address"
-            },
-            {
-              "type": "BLANK"
-            }
-          ]
+          "type": "SYMBOL",
+          "name": "link_address"
         },
         {
           "type": "CHOICE",

@@ -7,6 +7,7 @@ parse:
 test:
 	tree-sitter test
 install:
+	tree-sitter generate
 	tree-sitter build
 	mv norsu.so ~/.local/share/nvim/site/parser/norsu.so
 	cp queries/norsu/highlights.scm ~/.local/share/nvim/site/queries/norsu/highlights.scm
