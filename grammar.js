@@ -48,30 +48,32 @@ export default grammar({
 		)),
 
 		// TODO add inline markup to headings
-		h1: $ => prec(1, seq($.h1_open, optional($.h_text), $._newline)),
-		h2: $ => prec(1, seq($.h2_open, optional($.h_text), $._newline)),
-		h3: $ => prec(1, seq($.h3_open, optional($.h_text), $._newline)),
-		h4: $ => prec(1, seq($.h4_open, optional($.h_text), $._newline)),
-		h5: $ => prec(1, seq($.h5_open, optional($.h_text), $._newline)),
-		h6: $ => prec(1, seq($.h6_open, optional($.h_text), $._newline)),
-		h_text: $ => repeat1($._text),
+		h1: $ => prec(1, seq($.h1_open, optional($._h_text), $._newline)),
+		h2: $ => prec(1, seq($.h2_open, optional($._h_text), $._newline)),
+		h3: $ => prec(1, seq($.h3_open, optional($._h_text), $._newline)),
+		h4: $ => prec(1, seq($.h4_open, optional($._h_text), $._newline)),
+		h5: $ => prec(1, seq($.h5_open, optional($._h_text), $._newline)),
+		h6: $ => prec(1, seq($.h6_open, optional($._h_text), $._newline)),
+		_h_text: $ => repeat1($._text),
 
 		paragraph: $ => prec.right(repeat1($._line)),
 		_line: $ => seq(repeat1($._inline), $._newline),
 		_inline: $ => choice(
 			$._text,
 			$.link,
-			$.link_open, $.link_close
+			$.link_open, $.link_close, $.link_alias_separator
 		),
 
-		link: $ => seq(
+		link: $ => prec.left(seq(
 			$.link_open,
 			$.link_address,
-			// TODO TEST extensively
-			optional(seq($.link_alias_separator, repeat($._text))),
+			optional(seq(
+				$.link_alias_separator,
+				repeat($._text),
+			)),
 			$.link_close
-		),
-		link_address: $ => repeat1($._text)
+		)),
+		link_address: $ => repeat1(choice($._text, $.link_open))
 	},
 
 	externals: $ => [
@@ -94,6 +96,8 @@ export default grammar({
 	// TODO FINAL CONSIDER REPLACE by a more elegant solution, if it is not
 	conflicts: $ => [[$.link, $._inline]]
 });
+
+// TODO NOW decide how to properly highlight the file format to work on all colorschemes
 
 /* NOTE test cases (seemingly) not expressable with corpus:
 # foo

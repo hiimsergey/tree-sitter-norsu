@@ -44,15 +44,11 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": true,
+      "multiple": false,
       "required": true,
       "types": [
         {
           "type": "h1_open",
-          "named": true
-        },
-        {
-          "type": "h_text",
           "named": true
         }
       ]
@@ -63,15 +59,11 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": true,
+      "multiple": false,
       "required": true,
       "types": [
         {
           "type": "h2_open",
-          "named": true
-        },
-        {
-          "type": "h_text",
           "named": true
         }
       ]
@@ -82,15 +74,11 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": true,
+      "multiple": false,
       "required": true,
       "types": [
         {
           "type": "h3_open",
-          "named": true
-        },
-        {
-          "type": "h_text",
           "named": true
         }
       ]
@@ -101,15 +89,11 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": true,
+      "multiple": false,
       "required": true,
       "types": [
         {
           "type": "h4_open",
-          "named": true
-        },
-        {
-          "type": "h_text",
           "named": true
         }
       ]
@@ -120,15 +104,11 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": true,
+      "multiple": false,
       "required": true,
       "types": [
         {
           "type": "h5_open",
-          "named": true
-        },
-        {
-          "type": "h_text",
           "named": true
         }
       ]
@@ -139,24 +119,15 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": true,
+      "multiple": false,
       "required": true,
       "types": [
         {
           "type": "h6_open",
           "named": true
-        },
-        {
-          "type": "h_text",
-          "named": true
         }
       ]
     }
-  },
-  {
-    "type": "h_text",
-    "named": true,
-    "fields": {}
   },
   {
     "type": "link",
@@ -188,7 +159,17 @@
   {
     "type": "link_address",
     "named": true,
-    "fields": {}
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "link_open",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "paragraph",
@@ -200,6 +181,10 @@
       "types": [
         {
           "type": "link",
+          "named": true
+        },
+        {
+          "type": "link_alias_separator",
           "named": true
         },
         {

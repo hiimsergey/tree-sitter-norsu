@@ -1,24 +1,37 @@
-//#define DEBUG
+#define DEBUG
 
 #ifdef DEBUG
 #	include <stdio.h>
 #endif
 #include "tree_sitter/parser.h"
 
+#define FOREACH             \
+	X(NEWLINE)              \
+	X(BLANK_LINE)           \
+	X(TEXT)                 \
+	X(H1_OPEN)              \
+	X(H2_OPEN)              \
+	X(H3_OPEN)              \
+	X(H4_OPEN)              \
+	X(H5_OPEN)              \
+	X(H6_OPEN)              \
+	X(LINK_OPEN)            \
+	X(LINK_CLOSE)           \
+	X(LINK_ALIAS_SEPARATOR)
+
 typedef enum {
-	NEWLINE,
-	BLANK_LINE,
-	TEXT,
-	H1_OPEN,
-	H2_OPEN,
-	H3_OPEN,
-	H4_OPEN,
-	H5_OPEN,
-	H6_OPEN,
-	LINK_OPEN,
-	LINK_CLOSE,
-	LINK_ALIAS_SEPARATOR
+#define X(x) x,
+FOREACH
+#undef X
 } TokenType;
+
+#ifdef DEBUG
+const char *token_type_strings[] = {
+#	define X(x) #x,
+FOREACH
+#	undef X
+};
+#endif
 
 static inline bool isoneof(int32_t c, const char *haystack) {
 	while (*haystack) if (*(haystack++) == c) return true;
@@ -30,8 +43,7 @@ static inline bool done(TSLexer *lexer, TokenType symbol) {
 	lexer->mark_end(lexer);
 
 #ifdef DEBUG
-#	define PRINT(token) printf(#token " (%c)\n", lexer->lookahead)
-	PRINT(symbol);
+	printf("%s (%c)\n", token_type_strings[symbol], lexer->lookahead);
 #endif
 
 	return true;
