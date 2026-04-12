@@ -15,7 +15,11 @@ export default grammar({
 				$.section6))
 		),
 
-		_block: $ => choice($._blank_line, $.paragraph),
+		_block: $ => choice(
+			$._blank_line,
+			$.paragraph,
+			$.list
+		),
 
 		section1: $ => prec.right(seq(
 			$.h1,
@@ -48,13 +52,12 @@ export default grammar({
 		)),
 
 		// TODO add inline markup to headings
-		h1: $ => prec(1, seq($.h1_open, optional($._h_text), $._newline)),
-		h2: $ => prec(1, seq($.h2_open, optional($._h_text), $._newline)),
-		h3: $ => prec(1, seq($.h3_open, optional($._h_text), $._newline)),
-		h4: $ => prec(1, seq($.h4_open, optional($._h_text), $._newline)),
-		h5: $ => prec(1, seq($.h5_open, optional($._h_text), $._newline)),
-		h6: $ => prec(1, seq($.h6_open, optional($._h_text), $._newline)),
-		_h_text: $ => repeat1($._text),
+		h1: $ => prec(1, seq($.h1_open, repeat($._text), $._newline)),
+		h2: $ => prec(1, seq($.h2_open, repeat($._text), $._newline)),
+		h3: $ => prec(1, seq($.h3_open, repeat($._text), $._newline)),
+		h4: $ => prec(1, seq($.h4_open, repeat($._text), $._newline)),
+		h5: $ => prec(1, seq($.h5_open, repeat($._text), $._newline)),
+		h6: $ => prec(1, seq($.h6_open, repeat($._text), $._newline)),
 
 		paragraph: $ => prec.right(repeat1($._line)),
 		_line: $ => seq(repeat1($._inline), $._newline),
@@ -62,6 +65,19 @@ export default grammar({
 			$._text,
 			$.link,
 			$.link_open, $.link_close, $.link_alias_separator
+		),
+
+		list: $ => prec.right(seq(repeat1($.list_item))),
+		list_item: $ => seq(
+			$.list_bullet,
+			repeat($._inline),
+			$._newline,
+			optional(seq(
+				$._list_indent,
+				$.list,
+				$._list_unindent
+			)),
+			$._list_unindent
 		),
 
 		link: $ => prec.left(seq(
@@ -86,12 +102,15 @@ export default grammar({
 		$.h4_open,
 		$.h5_open,
 		$.h6_open,
+		$.list_bullet,
+		$._list_indent,
+		$._list_unindent,
 		$.link_open,
 		$.link_close,
 		$.link_alias_separator
 	],
 
-	extras: $ => [],
+	extras: _ => [],
 
 	// TODO FINAL CONSIDER REPLACE by a more elegant solution, if it is not
 	conflicts: $ => [[$.link, $._inline]]
@@ -104,6 +123,24 @@ export default grammar({
 */
 
 /* TODO TEST
+lists:
+	- foo
+	-foo
+	-
+	- foo\n - bar
+	- foo\n-bar
+	- foo\n- bar\n- baz
+	--foo
+	-- foo
+	- foo\n-  bar
+	-\tfoo\n- bar
+	- foo\n\t- bar
+	- foo\n\t- bar\n\t- baz
+	- foo\n\t- bar\n    - baz
+	lvl 2 bullet followed by lvl 0
+	one-sided lvl staircase
+	double-sided lvl staircase
+
 headings:
 	trailing spaces in headings (should not be part of the name)
 
