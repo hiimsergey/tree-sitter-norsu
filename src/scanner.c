@@ -104,6 +104,7 @@ bool tree_sitter_norsu_external_scanner_scan(
 		if (advancing) return done(lexer, BLANK_LINE);
 	}
 
+	printf("valid LINK_OPEN: %d (%c)\n", valid_symbols[LINK_OPEN], lexer->lookahead);
 	if (valid_symbols[LINK_OPEN] && lexer->lookahead == '[') {
 		lexer->advance(lexer, false);
 
@@ -129,14 +130,17 @@ bool tree_sitter_norsu_external_scanner_scan(
 		return done(lexer, LINK_ALIAS_SEPARATOR);
 	}
 
+	printf("meanwhile (%c)\n", lexer->lookahead);
 	if (valid_symbols[LIST_BULLET]) {
 		const uint32_t start_col = lexer->get_column(lexer);
 		LOG(start_col);
 
 		for (;; lexer->advance(lexer, false)) {
+			printf("Meanwhile (%c)\n", lexer->lookahead);
 			LOG((int) pl->list.width);
 			if (!isoneof(lexer->lookahead, " \t")) {
 				if (lexer->lookahead != '-') break;
+				printf("postbreak\n");
 
 				const uint32_t walked = lexer->get_column(lexer) - start_col;
 				LOG(walked);
@@ -185,6 +189,7 @@ bool tree_sitter_norsu_external_scanner_scan(
 			if (is_tab != pl->list.tabs) break;
 		}
 	}
+	printf("0meanwhile (%c)\n", lexer->lookahead);
 
 	if (valid_symbols[LIST_UNINDENT]) return done(lexer, LIST_UNINDENT);
 
@@ -203,9 +208,13 @@ bool tree_sitter_norsu_external_scanner_scan(
 	}
 
 	if (!lexer->eof(lexer) && !isoneof(lexer->lookahead, "\n\r")) {
+		printf("ciao\n");
 		while (!lexer->eof(lexer) && !isoneof(lexer->lookahead, "\n\r")) {
-			lexer->advance(lexer, false);
+			printf("    (%c)\n", lexer->lookahead);
+			// TODO NOW DEBUG if i swap these two lines, the latest link test passes
+			// but [[foo|bar|baz]] enters loop
 			if (isoneof(lexer->lookahead, "[]|")) break;
+			lexer->advance(lexer, false);
 		}
 		return done(lexer, TEXT);
 	}
