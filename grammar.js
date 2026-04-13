@@ -52,12 +52,13 @@ export default grammar({
 		)),
 
 		// TODO add inline markup to headings
-		h1: $ => prec(1, seq($.h1_open, repeat($._text), $._newline)),
-		h2: $ => prec(1, seq($.h2_open, repeat($._text), $._newline)),
-		h3: $ => prec(1, seq($.h3_open, repeat($._text), $._newline)),
-		h4: $ => prec(1, seq($.h4_open, repeat($._text), $._newline)),
-		h5: $ => prec(1, seq($.h5_open, repeat($._text), $._newline)),
-		h6: $ => prec(1, seq($.h6_open, repeat($._text), $._newline)),
+		h1: $ => prec(1, seq($.h1_open, optional($.h_text), $._newline)),
+		h2: $ => prec(1, seq($.h2_open, optional($.h_text), $._newline)),
+		h3: $ => prec(1, seq($.h3_open, optional($.h_text), $._newline)),
+		h4: $ => prec(1, seq($.h4_open, optional($.h_text), $._newline)),
+		h5: $ => prec(1, seq($.h5_open, optional($.h_text), $._newline)),
+		h6: $ => prec(1, seq($.h6_open, optional($.h_text), $._newline)),
+		h_text: $ => repeat1($._text),
 
 		paragraph: $ => prec.right(repeat1($._line)),
 		_line: $ => seq(repeat1($._inline), $._newline),
