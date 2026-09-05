@@ -76,9 +76,9 @@ export default grammar({
 			optional(seq(
 				$._list_indent,
 				$.list,
-				$._list_unindent
+				$._list_deindent
 			)),
-			$._list_unindent
+			$._list_deindent
 		),
 
 		link: $ => prec.left(seq(
@@ -105,7 +105,7 @@ export default grammar({
 		$.h6_open,
 		$.list_bullet,
 		$._list_indent,
-		$._list_unindent,
+		$._list_deindent,
 		$.link_open,
 		$.link_close,
 		$.link_alias_separator
@@ -116,6 +116,10 @@ export default grammar({
 	// TODO FINAL CONSIDER REPLACE by a more elegant solution, if it is not
 	conflicts: $ => [[$.link, $._inline]]
 });
+
+// TODO NOW DEBUG [[foo|bar|baz]]
+// TODO NOW make link_open private
+// and alias them to be public only in link constructs
 
 // TODO NOW decide how to properly highlight the file format to work on all colorschemes
 

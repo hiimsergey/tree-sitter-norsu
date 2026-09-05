@@ -48,11 +48,15 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": true,
       "types": [
         {
           "type": "h1_open",
+          "named": true
+        },
+        {
+          "type": "h_text",
           "named": true
         }
       ]
@@ -63,11 +67,15 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": true,
       "types": [
         {
           "type": "h2_open",
+          "named": true
+        },
+        {
+          "type": "h_text",
           "named": true
         }
       ]
@@ -78,11 +86,15 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": true,
       "types": [
         {
           "type": "h3_open",
+          "named": true
+        },
+        {
+          "type": "h_text",
           "named": true
         }
       ]
@@ -93,11 +105,15 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": true,
       "types": [
         {
           "type": "h4_open",
+          "named": true
+        },
+        {
+          "type": "h_text",
           "named": true
         }
       ]
@@ -108,11 +124,15 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": true,
       "types": [
         {
           "type": "h5_open",
+          "named": true
+        },
+        {
+          "type": "h_text",
           "named": true
         }
       ]
@@ -123,15 +143,24 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": true,
       "types": [
         {
           "type": "h6_open",
           "named": true
+        },
+        {
+          "type": "h_text",
+          "named": true
         }
       ]
     }
+  },
+  {
+    "type": "h_text",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "link",

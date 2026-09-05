@@ -1,12 +1,12 @@
 all:
 	tree-sitter generate
-cat:
-	cat test/.test | nl -b a
-parse:
+c cat:
+	cat -n test/.test
+p parse:
 	tree-sitter parse test/.test
-test:
+t test:
 	tree-sitter test
-install:
+i install:
 	tree-sitter generate
 	tree-sitter build
 	mv norsu.so ~/.local/share/nvim/site/parser/norsu.so
