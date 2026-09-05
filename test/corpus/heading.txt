@@ -7,6 +7,7 @@ H1 heading
 	(section1
 		(h1
 			(h1_open)
+			(h_text)
 		)
 	)
 )
@@ -20,6 +21,7 @@ H2 heading
 	(section2
 		(h2
 			(h2_open)
+			(h_text)
 		)
 	)
 )
@@ -33,6 +35,7 @@ H3 heading
 	(section3
 		(h3
 			(h3_open)
+			(h_text)
 		)
 	)
 )
@@ -46,6 +49,7 @@ H4 heading
 	(section4
 		(h4
 			(h4_open)
+			(h_text)
 		)
 	)
 )
@@ -59,6 +63,7 @@ H5 heading
 	(section5
 		(h5
 			(h5_open)
+			(h_text)
 		)
 	)
 )
@@ -72,6 +77,7 @@ H6 heading
 	(section6
 		(h6
 			(h6_open)
+			(h_text)
 		)
 	)
 )
@@ -86,11 +92,13 @@ Two consecutive headings
 	(section2
 		(h2
 			(h2_open)
+			(h_text)
 		)
 	)
 	(section2
 		(h2
 			(h2_open)
+			(h_text)
 		)
 	)
 )
@@ -105,10 +113,12 @@ Descending hierarchy
 	(section1
 		(h1
 			(h1_open)
+			(h_text)
 		)
 		(section2
 			(h2
 				(h2_open)
+			(h_text)
 			)
 		)
 	)
@@ -124,11 +134,13 @@ Ascending hierarchy
 	(section2
 		(h2
 			(h2_open)
+			(h_text)
 		)
 	)
 	(section1
 		(h1
 			(h1_open)
+			(h_text)
 		)
 	)
 )
@@ -147,26 +159,32 @@ All headings, descending hierarchy
 	(section1
 		(h1
 			(h1_open)
+			(h_text)
 		)
 		(section2
 			(h2
 				(h2_open)
+				(h_text)
 			)
 			(section3
 				(h3
 					(h3_open)
+					(h_text)
 				)
 				(section4
 					(h4
 						(h4_open)
+						(h_text)
 					)
 					(section5
 						(h5
 							(h5_open)
+							(h_text)
 						)
 						(section6
 							(h6
 								(h6_open)
+								(h_text)
 							)
 						)
 					)
@@ -298,6 +316,7 @@ bar
 	(section1
 		(h1
 			(h1_open)
+			(h_text)
 		)
 		(paragraph)
 	)
@@ -314,6 +333,7 @@ bar
 	(section1
 		(h1
 			(h1_open)
+			(h_text)
 		)
 		(paragraph)
 	)
@@ -330,6 +350,7 @@ foo
 	(section1
 		(h1
 			(h1_open)
+			(h_text)
 		)
 	)
 )

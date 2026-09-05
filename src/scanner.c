@@ -96,9 +96,26 @@ bool tree_sitter_norsu_external_scanner_scan(
 	}
 
 	if (valid_symbols[BLANK_LINE]) {
-		const bool advanced = isoneof(lexer->lookahead, " \t\n\r");
-		while (isoneof(lexer->lookahead, " \t\n\r")) lexer->advance(lexer, false);
-		if (advanced) return done(lexer, BLANK_LINE);
+		// const bool advanced = isoneof(lexer->lookahead, " \t\n\r");
+		// while (isoneof(lexer->lookahead, " \t\n\r")) lexer->advance(lexer, false);
+		// if (advanced) return done(lexer, BLANK_LINE);
+
+		bool last_is_newline = false;
+		while (true) {
+			if (isoneof(lexer->lookahead, "\n\r")) {
+				last_is_newline = true;
+				if (lexer->lookahead == '\r') lexer->advance(lexer, false);
+				if (lexer->lookahead == '\n') lexer->advance(lexer, false);
+				continue;
+			}
+			if (isoneof(lexer->lookahead, " \t")) {
+				last_is_newline = false;
+				lexer->advance(lexer, false);
+				continue;
+			}
+			break;
+		}
+		if (last_is_newline) return done(lexer, BLANK_LINE);
 	}
 
 	if (valid_symbols[LINK_OPEN] && lexer->lookahead == '[') {
@@ -188,7 +205,7 @@ bool tree_sitter_norsu_external_scanner_scan(
 
 	if (valid_symbols[LIST_DEINDENT]) return done(lexer, LIST_DEINDENT);
 
-	if (valid_symbols[H1_OPEN]) {
+	if (valid_symbols[H1_OPEN] && lexer->get_column(lexer) == 0) {
 		int count = 0;
 		while (lexer->lookahead == '#' && count <= 6) {
 			lexer->advance(lexer, false);
