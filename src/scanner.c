@@ -1,5 +1,5 @@
-#define TOKSTREAM
-#define LOG
+// #define TOKSTREAM
+// #define LOG
 
 #include <stdbool.h>
 #if defined(TOKSTREAM) || defined(LOG)
@@ -60,7 +60,7 @@ typedef struct {
 		size_t level;
 		size_t width;
 		bool gauging;
-		bool tabs;
+		bool use_tabs;
 	} list;
 } Context;
 
@@ -96,10 +96,6 @@ bool tree_sitter_norsu_external_scanner_scan(
 	}
 
 	if (valid_symbols[BLANK_LINE]) {
-		// const bool advanced = isoneof(lexer->lookahead, " \t\n\r");
-		// while (isoneof(lexer->lookahead, " \t\n\r")) lexer->advance(lexer, false);
-		// if (advanced) return done(lexer, BLANK_LINE);
-
 		bool last_is_newline = false;
 		while (true) {
 			if (isoneof(lexer->lookahead, "\n\r")) {
@@ -153,8 +149,8 @@ bool tree_sitter_norsu_external_scanner_scan(
 
 			if (isoneof(lexer->lookahead, " \t")) {
 				const bool is_tab = lexer->lookahead == '\t';
-				if (pl->list.gauging) pl->list.tabs = is_tab;
-				if (is_tab != pl->list.tabs) break;
+				if (pl->list.gauging) pl->list.use_tabs = is_tab;
+				if (is_tab != pl->list.use_tabs) break;
 				continue;
 			}
 
@@ -171,6 +167,22 @@ bool tree_sitter_norsu_external_scanner_scan(
 					break;
 				while (isoneof(lexer->lookahead, " \t")) lexer->advance(lexer, false);
 				return done(lexer, LIST_BULLET);
+
+				// TODO NOTE
+				// 0 s - 0
+				// 0 t - 0
+				// s s - s
+				// s t - 0
+				// t s - 0
+				// t t - t
+				// 1 s - s
+				// 1 t - t
+				//
+				// (a == b) * a + (a != b) * (a == 1) * b
+				//
+				// if (a == b) return a;
+				// if (a == 1) return b;
+				// return 0;
 			}
 			
 			if (pl->list.gauging) {
@@ -219,7 +231,7 @@ bool tree_sitter_norsu_external_scanner_scan(
 		}
 	}
 
-	//printf("advance: '%c'\n", lexer->lookahead);
+	// printf("advance: '%c'\n", lexer->lookahead);
 	if (!lexer->eof(lexer) && !isoneof(lexer->lookahead, "\n\r")) {
 		while (!lexer->eof(lexer) && !isoneof(lexer->lookahead, "\n\r")) {
 			// TODO NOW DEBUG if i swap these two lines, the latest link test passes

@@ -228,6 +228,29 @@
       "required": true,
       "types": [
         {
+          "type": "list",
+          "named": true
+        },
+        {
+          "type": "list_bullet",
+          "named": true
+        },
+        {
+          "type": "list_text",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "list_text",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
           "type": "link",
           "named": true
         },
@@ -241,14 +264,6 @@
         },
         {
           "type": "link_open",
-          "named": true
-        },
-        {
-          "type": "list",
-          "named": true
-        },
-        {
-          "type": "list_bullet",
           "named": true
         }
       ]

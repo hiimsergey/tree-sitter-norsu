@@ -71,15 +71,15 @@ export default grammar({
 		list: $ => prec.right(seq(repeat1($.list_item))),
 		list_item: $ => seq(
 			$.list_bullet,
-			repeat($._inline),
+			optional($.list_text),
 			$._newline,
 			optional(seq(
 				$._list_indent,
 				$.list,
 				$._list_deindent
-			)),
-			$._list_deindent
+			))
 		),
+		list_text: $ => repeat1($._inline),
 
 		link: $ => prec.left(seq(
 			$.link_open,
