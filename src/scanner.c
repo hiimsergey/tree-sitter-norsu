@@ -1,5 +1,5 @@
-// #define TOKSTREAM
-// #define LOG
+#define TOKSTREAM
+//#define LOG
 
 #include <stdbool.h>
 #if defined(TOKSTREAM) || defined(LOG)
@@ -55,14 +55,29 @@ FOREACH
 #	define LOG(_) {}
 #endif // LOG
 
+typedef enum {
+	INCONSISTENT = 0,
+	NONE,
+	GAUGING,
+	SPACE = ' ',
+	TAB = '\t',
+} SpacingState;
+
 typedef struct {
 	struct {
-		size_t level;
-		size_t width;
+		size_t level; // TODO CHECK used
+		size_t width; // TODO CHECK used
 		bool gauging;
-		bool use_tabs;
 	} list;
+	SpacingState spacing_state;
 } Context;
+
+static inline void update_spacing_status(SpacingState *spacing_status, char rhs) {
+	const SpacingState lhs = *spacing_status;
+	*spacing_status =
+		(lhs == rhs) * rhs |
+		(lhs != rhs) * (lhs == NONE || lhs == GAUGING) * rhs;
+}
 
 static inline bool isoneof(int32_t c, const char *haystack) {
 	while (*haystack) if (*(haystack++) == c) return true;
@@ -96,23 +111,31 @@ bool tree_sitter_norsu_external_scanner_scan(
 	}
 
 	if (valid_symbols[BLANK_LINE]) {
-		bool last_is_newline = false;
+		LOG("BLANK_LINE valid");
+
+		pl->spacing_state = NONE;
 		while (true) {
-			if (isoneof(lexer->lookahead, "\n\r")) {
-				last_is_newline = true;
-				if (lexer->lookahead == '\r') lexer->advance(lexer, false);
-				if (lexer->lookahead == '\n') lexer->advance(lexer, false);
-				continue;
+			switch (lexer->lookahead) {
+				case '\n':
+				case '\r':
+					pl->spacing_state = GAUGING;
+					if (lexer->lookahead == '\r') lexer->advance(lexer, false);
+					if (lexer->lookahead == '\n') lexer->advance(lexer, false);
+					goto while_continue;
+				case ' ':
+				case '\t':
+					update_spacing_status(&pl->spacing_state, lexer->lookahead);
+					lexer->advance(lexer, false);
+					goto while_continue;
+				default:
+					if (pl->spacing_state == GAUGING) return done(lexer, BLANK_LINE);
+					goto not_blank_line;
 			}
-			if (isoneof(lexer->lookahead, " \t")) {
-				last_is_newline = false;
-				lexer->advance(lexer, false);
-				continue;
-			}
-			break;
+while_continue:
+			{}
 		}
-		if (last_is_newline) return done(lexer, BLANK_LINE);
 	}
+not_blank_line:
 
 	if (valid_symbols[LINK_OPEN] && lexer->lookahead == '[') {
 		lexer->advance(lexer, false);
@@ -121,7 +144,7 @@ bool tree_sitter_norsu_external_scanner_scan(
 			lexer->advance(lexer, false);
 			return done(lexer, LINK_OPEN);
 		}
-		return done(lexer, TEXT);
+		return done(lexer, TEXT); // TODO FINAL CONSIDER
 	}
 
 	if (valid_symbols[LINK_CLOSE] && lexer->lookahead == ']') {
@@ -131,7 +154,7 @@ bool tree_sitter_norsu_external_scanner_scan(
 			lexer->advance(lexer, false);
 			return done(lexer, LINK_CLOSE);
 		}
-		return done(lexer, TEXT);
+		return done(lexer, TEXT); // TODO FINAL CONSIDER
 	}
 
 	if (valid_symbols[LINK_ALIAS_SEPARATOR] && lexer->lookahead == '|') {
@@ -139,83 +162,47 @@ bool tree_sitter_norsu_external_scanner_scan(
 		return done(lexer, LINK_ALIAS_SEPARATOR);
 	}
 
-	// TODO TEST something like "   - foo" is not a list
-	if (valid_symbols[LIST_BULLET]) {
+	if (valid_symbols[LIST_BULLET] &&
+		lexer->lookahead == '-' &&
+		pl->spacing_state != INCONSISTENT)
+	{
+		LOG("LIST_BULLET valid");
+
 		const uint32_t start_col = lexer->get_column(lexer);
 		LOG(start_col);
 
-		for (;; lexer->advance(lexer, false)) {
-			LOG((int) pl->list.width);
-
-			if (isoneof(lexer->lookahead, " \t")) {
-				const bool is_tab = lexer->lookahead == '\t';
-				if (pl->list.gauging) pl->list.use_tabs = is_tab;
-				if (is_tab != pl->list.use_tabs) break;
-				continue;
-			}
-
-			if (lexer->lookahead != '-') break;
-
-			const uint32_t walked = lexer->get_column(lexer) - start_col;
-			LOG(walked);
-			if (walked == 0) {
-				// TODO CHECK correctness of start_col v
-				pl->list.level = pl->list.gauging ? 0 : start_col / pl->list.width;
-
-				lexer->advance(lexer, false);
-				if (!isoneof(lexer->lookahead, " \t\n\r") && !lexer->eof(lexer))
-					break;
-				while (isoneof(lexer->lookahead, " \t")) lexer->advance(lexer, false);
-				return done(lexer, LIST_BULLET);
-
-				// TODO NOTE
-				// 0 s - 0
-				// 0 t - 0
-				// s s - s
-				// s t - 0
-				// t s - 0
-				// t t - t
-				// 1 s - s
-				// 1 t - t
-				//
-				// (a == b) * a + (a != b) * (a == 1) * b
-				//
-				// if (a == b) return a;
-				// if (a == 1) return b;
-				// return 0;
-			}
-			
-			if (pl->list.gauging) {
-				pl->list.width = walked;
-				pl->list.gauging = false;
-
-				lexer->advance(lexer, false);
-				if (!isoneof(lexer->lookahead, " \t\n\r") && !lexer->eof(lexer))
-					break;
-				while (isoneof(lexer->lookahead, " \t")) lexer->advance(lexer, false);
-				return done(lexer, LIST_BULLET);
-			}
-
-			if (walked % pl->list.width != 0) break;
-
-			const uint32_t level = walked / pl->list.width;
-			if (level > pl->list.level + 1) break;
-			// TODO NOW deindenting twice
-			if (level < pl->list.level + 1) {
-				--pl->list.level;
-				return done(lexer, LIST_DEINDENT);
-			}
-
-			pl->list.level = level;
-
+		if (start_col == 0) {
+			pl->list.gauging = true;
+			pl->list.level = 1;
 			lexer->advance(lexer, false);
-			if (!isoneof(lexer->lookahead, " \t\n\r") && !lexer->eof(lexer)) break;
-			while (isoneof(lexer->lookahead, " \t")) lexer->advance(lexer, false);
 			return done(lexer, LIST_BULLET);
 		}
-	}
 
-	if (valid_symbols[LIST_DEINDENT]) return done(lexer, LIST_DEINDENT);
+		if (pl->list.level == 0) goto not_list_bullet;
+
+		if (pl->list.gauging) {
+			pl->list.gauging = false;
+			pl->list.width = start_col;
+			return done(lexer, LIST_INDENT);
+		}
+
+		if (start_col % pl->list.width != 0) goto not_list_bullet;
+		const uint32_t level = start_col / pl->list.width + 1;
+		if (level > pl->list.level + 1) goto not_list_bullet;
+		if (level == pl->list.level) {
+			lexer->advance(lexer, false);
+			return done(lexer, LIST_BULLET);
+		}
+		if (level == pl->list.level + 1) {
+			++pl->list.level;
+			return done(lexer, LIST_INDENT);
+		}
+		--pl->list.level;
+		return done(lexer, LIST_DEINDENT);
+
+not_list_bullet:
+		pl->list.level = 0;
+	}
 
 	if (valid_symbols[H1_OPEN] && lexer->get_column(lexer) == 0) {
 		int count = 0;
@@ -223,16 +210,21 @@ bool tree_sitter_norsu_external_scanner_scan(
 			lexer->advance(lexer, false);
 			++count;
 		}
+		// TODO FINAL ALL CONSIDER global handling system for whitespace between
+		// token and text (like with headings and lists)
 		if (count >= 1 && count <= 6 &&
 			(isoneof(lexer->lookahead, " \t\n\r") || lexer->eof(lexer)))
 		{
+			done(lexer, H1_OPEN + count - 1);
 			while (isoneof(lexer->lookahead, " \t")) lexer->advance(lexer, false);
-			return done(lexer, H1_OPEN + count - 1);
+			return true;
 		}
 	}
 
-	// printf("advance: '%c'\n", lexer->lookahead);
 	if (!lexer->eof(lexer) && !isoneof(lexer->lookahead, "\n\r")) {
+		while (isoneof(lexer->lookahead, " \t")) lexer->advance(lexer, true);
+		if (isoneof(lexer->lookahead, "\n\r")) return true;
+
 		while (!lexer->eof(lexer) && !isoneof(lexer->lookahead, "\n\r")) {
 			// TODO NOW DEBUG if i swap these two lines, the latest link test passes
 			// but [[foo|bar|baz]] enters loop
@@ -247,7 +239,6 @@ bool tree_sitter_norsu_external_scanner_scan(
 
 void *tree_sitter_norsu_external_scanner_create() {
 	Context *const pl = ts_calloc(1, sizeof(Context));
-	pl->list.gauging = true;
 	return pl;
 }
 
