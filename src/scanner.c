@@ -21,7 +21,8 @@
 	X(H6_OPEN)              \
 	X(LIST_BULLET)          \
 	X(LIST_INDENT)          \
-	X(LIST_DEINDENT)        \
+	X(LIST_DEDENT)          \
+	X(LIST_SPACE)           \
 	X(LINK_OPEN)            \
 	X(LINK_CLOSE)           \
 	X(LINK_ALIAS_SEPARATOR)
@@ -65,8 +66,8 @@ typedef enum {
 
 typedef struct {
 	struct {
-		size_t level; // TODO CHECK used
-		size_t width; // TODO CHECK used
+		size_t level; // TODO FINAL CHECK used
+		size_t width; // TODO FINAL CHECK used
 		bool gauging;
 	} list;
 	SpacingState spacing_state;
@@ -144,7 +145,7 @@ not_blank_line:
 			lexer->advance(lexer, false);
 			return done(lexer, LINK_OPEN);
 		}
-		return done(lexer, TEXT); // TODO FINAL CONSIDER
+		return done(lexer, TEXT);
 	}
 
 	if (valid_symbols[LINK_CLOSE] && lexer->lookahead == ']') {
@@ -154,7 +155,7 @@ not_blank_line:
 			lexer->advance(lexer, false);
 			return done(lexer, LINK_CLOSE);
 		}
-		return done(lexer, TEXT); // TODO FINAL CONSIDER
+		return done(lexer, TEXT);
 	}
 
 	if (valid_symbols[LINK_ALIAS_SEPARATOR] && lexer->lookahead == '|') {
@@ -166,8 +167,6 @@ not_blank_line:
 		lexer->lookahead == '-' &&
 		pl->spacing_state != INCONSISTENT)
 	{
-		LOG("LIST_BULLET valid");
-
 		const uint32_t start_col = lexer->get_column(lexer);
 		LOG(start_col);
 
@@ -183,22 +182,23 @@ not_blank_line:
 		if (pl->list.gauging) {
 			pl->list.gauging = false;
 			pl->list.width = start_col;
-			return done(lexer, LIST_INDENT);
 		}
 
 		if (start_col % pl->list.width != 0) goto not_list_bullet;
+
 		const uint32_t level = start_col / pl->list.width + 1;
 		if (level > pl->list.level + 1) goto not_list_bullet;
-		if (level == pl->list.level) {
-			lexer->advance(lexer, false);
-			return done(lexer, LIST_BULLET);
-		}
 		if (level == pl->list.level + 1) {
 			++pl->list.level;
 			return done(lexer, LIST_INDENT);
 		}
+		if (valid_symbols[LIST_SPACE]) return done(lexer, LIST_SPACE);
+		if (level == pl->list.level) {
+			lexer->advance(lexer, false);
+			return done(lexer, LIST_BULLET);
+		}
 		--pl->list.level;
-		return done(lexer, LIST_DEINDENT);
+		return done(lexer, LIST_DEDENT);
 
 not_list_bullet:
 		pl->list.level = 0;

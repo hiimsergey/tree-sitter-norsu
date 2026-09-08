@@ -68,17 +68,18 @@ export default grammar({
 			$.link_open, $.link_close, $.link_alias_separator
 		),
 
-		list: $ => prec.right(seq(repeat1($.list_item))),
-		list_item: $ => seq(
+		list: $ => prec.right(repeat1($.list_item)),
+		list_item: $ => prec.left(seq(
+			optional($._list_space),
 			$.list_bullet,
 			optional($.list_text),
 			$._newline,
 			optional(seq(
 				$._list_indent,
 				$.list,
-				$._list_deindent
+				optional($._list_dedent),
 			))
-		),
+		)),
 		list_text: $ => repeat1($._inline),
 
 		link: $ => prec.left(seq(
@@ -86,11 +87,12 @@ export default grammar({
 			$.link_address,
 			optional(seq(
 				$.link_alias_separator,
-				repeat($._text),
+				$.link_alias
 			)),
 			$.link_close
 		)),
-		link_address: $ => repeat1(choice($._text, $.link_open))
+		link_address: $ => repeat1(choice($._text, $.link_open)),
+		link_alias: $ => repeat1($._text)
 	},
 
 	externals: $ => [
@@ -105,7 +107,8 @@ export default grammar({
 		$.h6_open,
 		$.list_bullet,
 		$._list_indent,
-		$._list_deindent,
+		$._list_dedent,
+		$._list_space,
 		$.link_open,
 		$.link_close,
 		$.link_alias_separator
